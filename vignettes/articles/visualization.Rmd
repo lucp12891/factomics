@@ -1,0 +1,124 @@
+---
+title: "Embeddings and visualisation: PCA, UMAP, t-SNE"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 8,
+                      fig.height = 4.5, dpi = 96, message = FALSE,
+                      warning = FALSE)
+```
+
+```{r}
+library(factomics)
+sim <- simulate_multiomics(n_samples = 60, seed = 1)
+res <- run_factor_pipeline(sim$data, methods = c("PCA", "MFA", "GFA", "JIVE"),
+                           k = 4, verbose = FALSE)
+```
+
+## Factor scores directly
+
+The most direct view of a factor model: plot one factor against another.
+
+```{r}
+plot_factor_scores(res, factors = c(1, 2), metadata = sim$metadata,
+                   color_by = "group")
+```
+
+## PCA, UMAP and t-SNE of the factor space
+
+With more than two factors, a 2-D embedding shows the whole factor space at
+once. `embed_results()` embeds the scores of every method, plus the
+concatenated input data as a baseline, with any of the three techniques:
+
+```{r, fig.height = 7, fig.width = 10}
+emb <- embed_results(res, type = c("pca", "umap", "tsne"))
+plot_embedding(emb, metadata = sim$metadata, color_by = "group")
+```
+
+Points can also be shaped by a second variable:
+
+```{r, fig.height = 3.4, fig.width = 10}
+emb_umap <- embed_results(res, type = "umap")
+plot_embedding(emb_umap, metadata = sim$metadata, color_by = "group",
+               shape_by = "batch")
+```
+
+The defaults are chosen for the small sample sizes common in omics: UMAP uses
+`n_neighbors = min(15, n - 1)` and t-SNE a perplexity below `(n - 1) / 3`. Both
+can be changed, and `compute_embedding()` works on any samples x features
+matrix:
+
+```{r}
+e <- compute_embedding(res$MFA$scores, type = "umap", n_neighbors = 10,
+                       min_dist = 0.3)
+head(e, 3)
+```
+
+## Variance explained
+
+```{r, fig.height = 3.6}
+plot_variance_explained(res)
+```
+
+```{r, fig.height = 3.4}
+plot_variance_explained(res, type = "total")
+```
+
+The underlying numbers are available as a table:
+
+```{r}
+ve <- variance_explained(res)
+head(ve[ve$factor == "Total", ])
+```
+
+## Heatmap of factor scores
+
+```{r, fig.height = 3.2}
+plot_factor_heatmap(res, "MFA", metadata = sim$metadata, order_by = "group")
+```
+
+## Top features of a factor
+
+```{r, fig.height = 5}
+plot_top_loadings(res, "GFA", factor = 1, n = 25)
+```
+
+Restrict to one view:
+
+```{r, fig.height = 4}
+plot_top_loadings(res, "GFA", factor = 1, n = 15, view = "metabolome")
+```
+
+## Factors and covariates
+
+```{r, fig.height = 3.6}
+plot_factor_associations(res, sim$metadata, covariates = c("group", "batch",
+                                                          "age"))
+```
+
+## Comparing one factor across methods
+
+`plot_scores_scatter_grid()` and `plot_scores_lollipop_grid()` show one factor
+per method, side by side. Each method's factor is matched to the reference
+method's factor (by largest absolute correlation) and its sign aligned.
+
+```{r, fig.height = 6}
+res <- attach_scores_metadata(res, sim$metadata)
+plot_scores_scatter_grid(res, factor_idx = 1, group_col = "group",
+                         align_to = "MFA")
+```
+
+```{r, fig.height = 6}
+plot_scores_lollipop_grid(res, factor_idx = 1, group_col = "group",
+                          baseline = "group_mean", align_to = "MFA")
+```
+
+## Theming
+
+All plots are ggplot2 objects and use `theme_factomics()`; add or override
+layers as usual:
+
+```{r, eval = FALSE}
+plot_embedding(emb_umap, sim$metadata, color_by = "group") +
+  ggplot2::theme_classic()
+```

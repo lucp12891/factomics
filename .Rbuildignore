@@ -1,0 +1,14 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^README\.Rmd$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
+^Dockerfile$
+^docker-compose\.yml$
+^\.dockerignore$
+^vignettes/articles$
+^data-raw$
+^factomics_output$

@@ -1,0 +1,141 @@
+---
+title: "Methods and how to tune them"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 8,
+                      fig.height = 4.5, dpi = 96, message = FALSE,
+                      warning = FALSE)
+has_mofa <- requireNamespace("MOFA2", quietly = TRUE) &&
+  requireNamespace("reticulate", quietly = TRUE) &&
+  isTRUE(tryCatch(reticulate::py_module_available("mofapy2"),
+                  error = function(e) FALSE))
+```
+
+```{r}
+library(factomics)
+sim <- simulate_multiomics(n_samples = 60, seed = 1)
+```
+
+All methods are called the same way, through `run_factor_pipeline(X, methods, k)`.
+Method-specific settings are ordinary arguments with a method prefix
+(`fabia_*`, `mofa_*`, `gfa_*`, `pca_*`, `sgcca_*`, `jive_*`).
+
+```{r}
+knitr::kable(list_factor_methods()[, c("method", "package", "family",
+                                      "description")])
+```
+
+## Preprocessing shared by all methods
+
+By default (`scale_features = TRUE`) every feature is z-scored, so all features
+start on the same footing, and zero-variance features are set to zero. Samples
+are aligned across views by name. If your data are already normalised the way
+you want, use `scale_features = FALSE`.
+
+## PCA: block-weighted, concatenated
+
+The simplest integrative baseline: the views are stacked and a single PCA is
+run. With `pca_block_weight = TRUE` (default) each view is divided by the square
+root of its number of features, so a view with 10,000 genes does not swamp a view
+with 50 metabolites. It needs nothing beyond base R.
+
+```{r}
+res_pca <- run_factor_pipeline(sim$data, methods = "PCA", k = 4,
+                               verbose = FALSE)
+round(res_pca$PCA$meta$variance_percent, 1)
+```
+
+## MFA: Multiple Factor Analysis
+
+MFA (FactoMineR) weights each view by its first eigenvalue, then runs a global
+PCA. It is fast, deterministic and a strong default. It needs at least two views.
+`mfa_group_sizes` can override the grouping of columns.
+
+## FABIA
+
+FABIA is a sparse, biclustering-oriented factor model: each factor is driven by a
+small set of features and a subset of samples. `fabia_alpha` controls loading
+sparseness (larger = sparser), `fabia_cyc` the number of iterations.
+
+```{r}
+res_fabia <- run_factor_pipeline(sim$data, methods = "FABIA", k = 4,
+                                 fabia_alpha = 0.05, fabia_cyc = 500,
+                                 verbose = FALSE)
+```
+
+## GFA: Group Factor Analysis
+
+GFA is a Bayesian factor model with view-wise sparsity: each factor can be active
+in all views, in some, or in only one. `gfa_iter_burnin` and `gfa_iter_max`
+control the Gibbs sampler. More iterations give more stable factors.
+
+## MOFA2
+
+MOFA2 is a Bayesian framework for multi-omics factor analysis that handles
+missing values and different likelihoods. It runs in Python (`mofapy2`) via
+reticulate. Either install `mofapy2` and tell factomics where that Python is:
+
+```{r, eval = FALSE}
+run_factor_pipeline(sim$data, methods = "MOFA", k = 4,
+                    mofa_python = "/usr/bin/python3")
+```
+
+or let MOFA2 build its own Python environment with
+`mofa_use_basilisk = TRUE`. The Docker image has everything set up already.
+`mofa_convergence` (`"fast"`, `"medium"`, `"slow"`) trades speed for precision.
+
+```{r, eval = has_mofa}
+res_mofa <- run_factor_pipeline(sim$data, methods = "MOFA", k = 4,
+                                mofa_convergence = "fast", verbose = FALSE)
+res_mofa$MOFA$plots$variance_by_factor
+```
+
+## SGCCA: sparse generalised CCA
+
+SGCCA (mixOmics) finds components that maximise the covariance between views,
+one component per view and dimension; factomics reports their average as the
+sample score. By default all features are kept; `sgcca_keep` gives the number of
+features to keep per view and component, for sparse, more interpretable loadings.
+
+```{r}
+res_sgcca <- run_factor_pipeline(sim$data, methods = "SGCCA", k = 3,
+                                 sgcca_keep = c(30, 15, 10), verbose = FALSE)
+colSums(res_sgcca$SGCCA$loadings != 0)
+```
+
+## JIVE
+
+JIVE splits each view into a **joint** part shared by all views (rank `k`), an
+**individual** part specific to the view (rank `jive_rank_individual`) and noise.
+factomics reports the factors of the joint part; the individual parts are kept in
+`meta$individual`.
+
+```{r}
+res_jive <- run_factor_pipeline(sim$data, methods = "JIVE", k = 3,
+                                jive_rank_individual = 1, verbose = FALSE)
+```
+
+## Running many methods together
+
+If a method fails (missing package, too few views, numerical problem) it is
+skipped with a warning and the others are still returned. Use
+`stop_on_error = TRUE` to make failures fatal instead.
+
+```{r}
+res_all <- run_factor_pipeline(
+  sim$data, methods = c("PCA", "MFA", "FABIA", "GFA", "SGCCA", "JIVE"),
+  k = 4, verbose = FALSE)
+res_all
+```
+
+```{r, fig.height = 3.4}
+plot_variance_explained(res_all, type = "total")
+```
+
+## Choosing the number of factors
+
+There is no single right `k`. A practical approach is to fit a generous `k`,
+look at `plot_variance_explained()`, and keep the factors that explain a
+noticeable share of variance in at least one view, or that associate with
+covariates of interest (`plot_factor_associations()`).

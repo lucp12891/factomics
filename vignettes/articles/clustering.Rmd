@@ -1,0 +1,84 @@
+---
+title: "Clustering samples on factors"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 8,
+                      fig.height = 4.5, dpi = 96, message = FALSE,
+                      warning = FALSE)
+```
+
+Factor models compress many features into a few factors; clustering on those
+factors is often more robust than clustering on the raw features, because noise
+and view size imbalance are reduced.
+
+```{r}
+library(factomics)
+sim <- simulate_multiomics(n_samples = 60, n_groups = 3, seed = 1)
+res <- run_factor_pipeline(sim$data,
+                           methods = c("PCA", "MFA", "FABIA", "GFA", "JIVE"),
+                           k = 4, verbose = FALSE)
+truth <- setNames(sim$metadata$group, sim$metadata$sample)
+```
+
+## One matrix
+
+`cluster_samples()` clusters any samples x features matrix with k-means,
+hierarchical clustering (Ward) or PAM. Give several values of `k` and the one
+with the highest mean silhouette width is kept:
+
+```{r}
+cl_mfa <- cluster_samples(res$MFA$scores, method = "hclust", k = 2:6)
+cl_mfa
+cl_mfa$by_k
+```
+
+By default the factor scores are **not** re-standardised, so each factor keeps
+its own variance and weak or noise factors weigh less. Use `scale = TRUE` to
+give every factor equal weight.
+
+## Every method at once
+
+```{r}
+cl <- cluster_results(res, cluster_method = "kmeans", k = 2:6)
+cl
+```
+
+```{r, fig.height = 4}
+plot_clusters(cl, "silhouette")
+```
+
+## Agreement between methods and with known labels
+
+```{r}
+cmp <- compare_clusterings(cl, truth = truth)
+round(cmp$agreement, 2)
+cmp$vs_truth
+```
+
+```{r, fig.width = 6.5, fig.height = 5.5}
+plot_clusters(cl, "agreement", truth = truth)
+```
+
+## Clusters in an embedding
+
+Pass the clustering to `plot_embedding()` to colour each method's embedding by
+its own clusters:
+
+```{r, fig.height = 5, fig.width = 10}
+emb <- embed_results(res, type = "umap")
+plot_embedding(emb, clusters = cl, shape_by = "group",
+               metadata = sim$metadata)
+```
+
+## Comparing algorithms
+
+```{r}
+algos <- c("kmeans", "hclust", "pam")
+ari <- sapply(algos, function(a) {
+  cl_a <- cluster_results(res, cluster_method = a, k = 2:6)
+  setNames(compare_clusterings(cl_a, truth)$vs_truth$ARI,
+           cl_a$summary$method)
+})
+round(ari, 2)
+```

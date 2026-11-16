@@ -1,0 +1,11 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+docs/
+inst/doc
+*.tar.gz
+*.hdf5
+factomics_output/
+output/
+data/

@@ -1,0 +1,114 @@
+url: https://lucp12891.github.io/factomics/
+
+template:
+  bootstrap: 5
+  light-switch: false
+  bslib:
+    primary: "#1A2A4F"
+    base_font: {google: "Source Sans 3"}
+    code_font: {google: "JetBrains Mono"}
+
+home:
+  title: factomics
+  description: One toolbox for multi-omics factor analysis in R.
+  sidebar:
+    structure: [links, license, citation, authors, dev]
+
+navbar:
+  structure:
+    left: [intro, methods, visualization, clustering, articles, reference, news]
+    right: [search, github]
+  components:
+    methods:
+      text: Methods
+      href: articles/methods.html
+    visualization:
+      text: Visualisation
+      href: articles/visualization.html
+    clustering:
+      text: Clustering
+      href: articles/clustering.html
+    articles:
+      text: Articles
+      menu:
+      - text: "Guides"
+      - text: Methods and how to tune them
+        href: articles/methods.html
+      - text: Embeddings and visualisation (PCA, UMAP, t-SNE)
+        href: articles/visualization.html
+      - text: Clustering samples on factors
+        href: articles/clustering.html
+      - text: Benchmarking factor methods
+        href: articles/benchmarking.html
+      - text: -------
+      - text: "Practical"
+      - text: Using your own data
+        href: articles/own-data.html
+      - text: Docker and the command line
+        href: articles/docker.html
+    github:
+      icon: fa-github
+      href: https://github.com/lucp12891/factomics
+      aria-label: GitHub
+
+articles:
+- title: Get started
+  navbar: ~
+  contents:
+  - factomics
+- title: Guides
+  contents:
+  - articles/methods
+  - articles/visualization
+  - articles/clustering
+  - articles/benchmarking
+- title: Practical
+  contents:
+  - articles/own-data
+  - articles/docker
+
+reference:
+- title: One-call workflow
+  contents:
+  - factomics
+  - export_results
+- title: Fitting factor models
+  contents:
+  - run_factor_pipeline
+  - list_factor_methods
+  - simulate_multiomics
+- title: Embeddings
+  contents:
+  - compute_embedding
+  - embed_results
+  - plot_embedding
+- title: Clustering
+  contents:
+  - cluster_samples
+  - cluster_results
+  - compare_clusterings
+  - adjusted_rand_index
+  - plot_clusters
+- title: Interpretation
+  contents:
+  - variance_explained
+  - plot_variance_explained
+  - factor_associations
+  - plot_factor_associations
+  - plot_top_loadings
+  - plot_factor_heatmap
+  - plot_factor_scores
+- title: Comparing methods
+  contents:
+  - benchmark_factor_methods
+  - build_loading_comparison
+  - plot_scores_scatter_grid
+  - plot_scores_lollipop_grid
+- title: Metadata and helpers
+  contents:
+  - attach_scores_metadata
+  - merge_scores_with_metadata
+  - scores_df_for_method
+  - split_loadings_by_omic
+  - theme_factomics
+  - factomics-package

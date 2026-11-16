@@ -1,0 +1,160 @@
+---
+title: "Get started with factomics"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Get started with factomics}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+needed <- c("FactoMineR", "fabia", "GFA", "uwot", "Rtsne")
+has_all <- all(vapply(needed, requireNamespace, logical(1), quietly = TRUE))
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 8,
+                      fig.height = 4.5, dpi = 96, message = FALSE,
+                      warning = FALSE, eval = has_all)
+```
+
+This page walks through a complete multi-omics factor analysis with
+**factomics**: fit several factor methods, look at the factors in
+low-dimensional embeddings, cluster the samples, check which method agrees with
+which, and find out what each factor means.
+
+```{r}
+library(factomics)
+```
+
+## 1. Data
+
+factomics takes a **named list of numeric matrices, features in rows and samples
+in columns**, one matrix per omics layer ("view"). All views must share the same
+sample names. Here we simulate three views measured on 60 samples from three
+groups, with a known set of latent factors:
+
+```{r}
+sim <- simulate_multiomics(n_samples = 60, n_groups = 3, seed = 1)
+lapply(sim$data, dim)
+head(sim$metadata)
+```
+
+See the [Using your own data](https://lucp12891.github.io/factomics/articles/own-data.html) article for reading your own files.
+
+## 2. Fit factor models
+
+`run_factor_pipeline()` runs any set of methods and returns them in one format.
+`list_factor_methods()` shows what is available on your machine:
+
+```{r}
+list_factor_methods()[, c("method", "package", "installed")]
+```
+
+```{r}
+res <- run_factor_pipeline(
+  sim$data,
+  methods = c("PCA", "MFA", "FABIA", "GFA"),
+  k       = 4,
+  verbose = FALSE
+)
+res
+```
+
+Every method has the same three slots: `scores` (samples x factors),
+`loadings` (features x factors, named `view::feature`) and `meta`:
+
+```{r}
+head(res$MFA$scores, 3)
+head(res$GFA$loadings, 3)
+```
+
+## 3. Attach metadata
+
+```{r}
+res <- attach_scores_metadata(res, sim$metadata, sample_col = "sample")
+head(res$MFA$scores_with_meta[, c("sample", "F1", "F2", "group")], 3)
+```
+
+## 4. How much does each factor explain?
+
+`variance_explained()` regresses each view on each method's factors, so every
+method is measured on the same R^2 scale:
+
+```{r, fig.height = 3.6}
+plot_variance_explained(res)
+```
+
+## 5. Look at the factor space
+
+Plot two factors directly, or embed the full factor space with PCA, UMAP or
+t-SNE. The concatenated input data are embedded too, as a baseline:
+
+```{r}
+plot_factor_scores(res, metadata = sim$metadata, color_by = "group")
+```
+
+```{r, fig.height = 6}
+emb <- embed_results(res, type = c("umap", "tsne"))
+plot_embedding(emb, metadata = sim$metadata, color_by = "group")
+```
+
+## 6. Cluster the samples
+
+`cluster_results()` clusters the samples on each method's factors and picks the
+number of clusters by the mean silhouette width:
+
+```{r}
+cl <- cluster_results(res, cluster_method = "kmeans", k = 2:6)
+cl
+```
+
+Because we know the true groups here, we can score each clustering with the
+adjusted Rand index (1 = perfect):
+
+```{r}
+truth <- setNames(sim$metadata$group, sim$metadata$sample)
+compare_clusterings(cl, truth)$vs_truth
+```
+
+```{r, fig.width = 6.5, fig.height = 5.5}
+plot_clusters(cl, "agreement", truth = truth)
+```
+
+## 7. Interpret the factors
+
+Which factors track the sample covariates?
+
+```{r, fig.height = 3.6}
+plot_factor_associations(res, sim$metadata)
+```
+
+Which features drive a factor?
+
+```{r, fig.height = 5}
+plot_top_loadings(res, "MFA", factor = 1, n = 20)
+```
+
+## 8. Compare the methods
+
+`benchmark_factor_methods()` matches factors between every pair of methods
+(Hungarian algorithm on the score correlations) and summarises how well they
+agree:
+
+```{r}
+bm <- benchmark_factor_methods(res)
+bm$summary_table_scores[, c("pair", "mean_abs_corr_scores")]
+```
+
+```{r, fig.width = 6.5, fig.height = 6.5}
+bm$all_scores_heatmap
+```
+
+## All of it in one call
+
+`factomics()` chains all of the above and `export_results()` writes the tables
+to disk:
+
+```{r, eval = FALSE}
+fx <- factomics(sim$data, metadata = sim$metadata,
+                methods = c("PCA", "MFA", "FABIA", "GFA"), k = 4,
+                embeddings = c("umap", "tsne"), cluster_method = "kmeans")
+export_results(fx, "factomics_output")
+```

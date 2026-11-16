@@ -1,0 +1,50 @@
+Package: factomics
+Title: One Toolbox for Multi-Omics Factor Analysis
+Version: 0.1.0
+Authors@R:
+    person("Bernard Isekah", "Osang'ir", , "bernard.osangir@sckcen.be",
+           role = c("aut", "cre"))
+Description: A unified framework for multi-omics latent factor analysis.
+    Runs several factor methods (PCA, Multiple Factor Analysis, FABIA, Group
+    Factor Analysis, MOFA2, sparse generalised canonical correlation analysis
+    and JIVE) through one consistent interface and returns their scores and
+    loadings in a common format. Provides embeddings (PCA, UMAP, t-SNE),
+    clustering with automatic choice of the number of clusters, method
+    benchmarking, factor interpretation (variance explained, top loadings,
+    covariate association), simulated data, and publication-ready plots.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Depends:
+    R (>= 4.1.0)
+Imports:
+    clue,
+    cluster,
+    ggplot2 (>= 3.4.0),
+    grDevices,
+    grid,
+    patchwork,
+    reshape2,
+    scales,
+    stats,
+    tibble,
+    utils
+Suggests:
+    fabia,
+    FactoMineR,
+    GFA,
+    knitr,
+    mixOmics,
+    MOFA2,
+    pROC,
+    r.jive,
+    reticulate,
+    rmarkdown,
+    Rtsne,
+    testthat (>= 3.0.0),
+    uwot
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+URL: https://lucp12891.github.io/factomics/, https://github.com/lucp12891/factomics
+BugReports: https://github.com/lucp12891/factomics/issues
+Config/roxygen2/version: 8.0.0

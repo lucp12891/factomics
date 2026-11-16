@@ -1,0 +1,6 @@
+.git
+docs
+.Rproj.user
+*.tar.gz
+output
+data

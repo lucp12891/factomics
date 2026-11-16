@@ -1,0 +1,120 @@
+---
+title: "Benchmarking factor methods"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 8,
+                      fig.height = 4.5, dpi = 96, message = FALSE,
+                      warning = FALSE)
+```
+
+When several methods are run on the same data, two questions follow: **do they
+find the same factors?** and, when the truth is known, **which recovers it
+best?** factomics answers both.
+
+```{r}
+library(factomics)
+sim <- simulate_multiomics(n_samples = 60, seed = 1)
+res <- run_factor_pipeline(
+  sim$data, methods = c("PCA", "MFA", "FABIA", "GFA", "SGCCA", "JIVE"),
+  k = 4, verbose = FALSE)
+```
+
+## Do the methods agree?
+
+Factor order and sign are arbitrary, so factors are first matched between each
+pair of methods with the Hungarian algorithm on the absolute score
+correlations. The summary reports how well the matched factors agree:
+
+```{r}
+bm <- benchmark_factor_methods(res)
+knitr::kable(bm$summary_table_scores[, c("pair", "k_matched_scores",
+                                         "mean_abs_corr_scores",
+                                         "max_abs_corr_scores")],
+             digits = 2)
+```
+
+The same is done for loadings, per view:
+
+```{r}
+head(bm$summary_table_loadings[, c("pair", "dataset",
+                                   "mean_abs_corr_loadings")])
+```
+
+All factors of all methods in one correlation heatmap:
+
+```{r, fig.width = 7, fig.height = 7}
+bm$all_scores_heatmap
+```
+
+Pairwise heatmaps and scatter plots of matched factors are also returned:
+
+```{r, fig.width = 5, fig.height = 5}
+bm$pair_heatmaps_scores[["MFA|GFA"]]
+```
+
+```{r, fig.width = 8, fig.height = 8}
+bm$pairs_scores_by_factor[["F1"]]
+```
+
+## Which method recovers the truth?
+
+With simulated data the true factors and signal features are known.
+
+**Factor recovery**: the best absolute correlation of each true factor with any
+fitted factor.
+
+```{r}
+recovery <- sapply(names(res), function(m)
+  apply(abs(cor(sim$truth$Z, res[[m]]$scores)), 1, max))
+round(recovery, 2)
+```
+
+**Feature recovery**: give `benchmark_factor_methods()` the true 0/1 feature
+labels and it reports, per method, the AUC of the largest absolute loading as a
+score for "this feature carries signal".
+
+```{r}
+bm_truth <- benchmark_factor_methods(
+  res, ground_truth_feature = sim$truth$feature_labels)
+bm_truth$auc_results
+```
+
+**Sample groups**: the adjusted Rand index of the clusters found on each
+method's factors.
+
+```{r}
+cl <- cluster_results(res, k = 2:6)
+compare_clusterings(cl, setNames(sim$metadata$group,
+                                 sim$metadata$sample))$vs_truth
+```
+
+## Repeating over many simulated data sets
+
+A small benchmark loop, varying the signal strength:
+
+```{r}
+bench_one <- function(effect, seed) {
+  s <- simulate_multiomics(n_samples = 45, effect = effect, seed = seed)
+  r <- run_factor_pipeline(s$data, methods = c("PCA", "MFA", "JIVE"), k = 3,
+                           verbose = FALSE)
+  cl <- cluster_results(r, k = 3, include_data = FALSE)
+  out <- compare_clusterings(cl, setNames(s$metadata$group,
+                                          s$metadata$sample))$vs_truth
+  out$effect <- effect
+  out
+}
+grid <- do.call(rbind, lapply(c(1, 1.5, 2, 3), function(e)
+  do.call(rbind, lapply(1:3, function(sd) bench_one(e, sd)))))
+agg <- aggregate(ARI ~ method + effect, grid, mean)
+```
+
+```{r, fig.height = 3.6}
+library(ggplot2)
+ggplot(agg, aes(effect, ARI, colour = method)) +
+  geom_line(linewidth = 0.9) + geom_point(size = 2) +
+  scale_colour_manual(values = factomics_palette(3)) +
+  labs(x = "Group effect size", y = "Mean ARI (3 replicates)",
+       title = "Group recovery as signal increases") +
+  theme_factomics()
+```

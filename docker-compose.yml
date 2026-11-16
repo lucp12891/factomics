@@ -1,0 +1,44 @@
+services:
+
+  # ----------------------------------------------------------------
+  # Interactive R session with factomics and all methods installed
+  #   docker compose run --rm r-session
+  # ----------------------------------------------------------------
+  r-session:
+    build: .
+    image: ghcr.io/lucp12891/factomics:latest
+    volumes:
+      - ./data:/work/data
+      - ./output:/work/output
+    working_dir: /work
+    stdin_open: true
+    tty: true
+    command: R
+
+  # ----------------------------------------------------------------
+  # Command-line analysis (edit the arguments to point at your CSVs)
+  #   docker compose run --rm cli
+  # ----------------------------------------------------------------
+  cli:
+    image: ghcr.io/lucp12891/factomics:latest
+    volumes:
+      - ./data:/work/data
+      - ./output:/work/output
+    working_dir: /work
+    command: >
+      factomics-cli --demo --methods PCA,MFA,FABIA,GFA,SGCCA,JIVE
+                    --k 5 --out output/demo
+
+  # ----------------------------------------------------------------
+  # RStudio Server at http://localhost:8787 (user: rstudio)
+  #   RSTUDIO_PASSWORD=choose-one docker compose up rstudio
+  # ----------------------------------------------------------------
+  rstudio:
+    image: ghcr.io/lucp12891/factomics:latest
+    ports:
+      - "8787:8787"
+    environment:
+      - PASSWORD=${RSTUDIO_PASSWORD:?Set RSTUDIO_PASSWORD before starting}
+    volumes:
+      - ./data:/home/rstudio/data
+      - ./output:/home/rstudio/output
