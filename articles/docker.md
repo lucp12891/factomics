@@ -1,0 +1,107 @@
+# Docker and the command line
+
+Installing every factor method yourself means CRAN packages,
+Bioconductor packages and a Python library for MOFA2. The factomics
+Docker image has all of them, plus RStudio Server and a command-line
+tool, so one `docker pull` gives you the whole toolbox.
+
+## Get the image
+
+``` bash
+docker pull ghcr.io/lucp12891/factomics:latest
+```
+
+Or build it from the repository:
+
+``` bash
+git clone https://github.com/lucp12891/factomics
+cd factomics
+docker build -t ghcr.io/lucp12891/factomics:latest .
+```
+
+## Three ways to use it
+
+### 1. The command line: `factomics-cli`
+
+Runs the whole workflow (fit, embed, cluster, benchmark) on CSV files
+and writes tables and figures. Each view is a CSV with **features in
+rows, samples in columns, feature IDs in the first column**.
+
+``` bash
+docker run --rm -v "$PWD":/work ghcr.io/lucp12891/factomics:latest \
+  factomics-cli \
+    --view rna=data/rna.csv \
+    --view met=data/metabolites.csv \
+    --view mic=data/microbiome_clr.csv \
+    --metadata data/metadata.csv --sample-col sample --color-by group \
+    --methods PCA,MFA,FABIA,GFA,MOFA,SGCCA,JIVE \
+    --k 5 --embeddings umap,tsne --cluster kmeans --n-clusters 2:6 \
+    --out output/run1
+```
+
+Try it without any data first:
+
+``` bash
+docker run --rm -v "$PWD":/work ghcr.io/lucp12891/factomics:latest \
+  factomics-cli --demo --out output/demo
+```
+
+The output folder contains:
+
+| File | Content |
+|----|----|
+| `<METHOD>_scores.csv` | samples x factors, per method |
+| `<METHOD>_loadings.csv` | features x factors, per method |
+| `variance_explained.csv` | R^2 per method, view and factor |
+| `clusters.csv`, `cluster_summary.csv` | cluster assignments and chosen k |
+| `embeddings.csv` | UMAP / t-SNE coordinates |
+| `benchmark_scores.csv` | agreement between methods |
+| `figures/*.png` | variance explained, embeddings, clusters, associations, top loadings |
+| `factomics_result.rds` | the full R object, for further work in R |
+
+All options: `factomics-cli --help`.
+
+### 2. Interactive R
+
+``` bash
+docker run --rm -it -v "$PWD":/work ghcr.io/lucp12891/factomics:latest R
+```
+
+``` r
+
+library(factomics)
+X <- list(rna = as.matrix(read.csv("data/rna.csv", row.names = 1)),
+          met = as.matrix(read.csv("data/metabolites.csv", row.names = 1)))
+fx <- factomics(X, methods = c("MFA", "MOFA", "GFA"), k = 5)
+```
+
+MOFA2’s Python backend is pre-configured (`RETICULATE_PYTHON` points to
+it), so `methods = "MOFA"` works without extra arguments.
+
+### 3. RStudio Server
+
+``` bash
+docker run --rm -p 8787:8787 -e PASSWORD=choose-a-password \
+  -v "$PWD":/home/rstudio/work ghcr.io/lucp12891/factomics:latest
+```
+
+Then open <http://localhost:8787> and log in as `rstudio` with your
+password.
+
+## docker compose
+
+The repository includes a `docker-compose.yml` with the three set-ups.
+Put your files in `./data`; results go to `./output`.
+
+``` bash
+docker compose run --rm r-session                   # R prompt
+docker compose run --rm cli                         # demo analysis
+RSTUDIO_PASSWORD=choose-one docker compose up rstudio
+```
+
+## Reproducibility
+
+Pin a version for a paper by using a tag instead of `latest`, for
+example `ghcr.io/lucp12891/factomics:v0.1.0`, and record the `--seed`
+(default 21). Every tagged release of the repository builds a matching
+image.

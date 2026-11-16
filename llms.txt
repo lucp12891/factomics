@@ -1,0 +1,246 @@
+# factomics
+
+![factomics logo](logo.png)
+
+One toolbox for multi-omics factor analysis in R. Seven factor methods
+behind one function, one result format, and the whole downstream
+workflow: embeddings, clustering, benchmarking and interpretation. Also
+available as a ready-to-run Docker image.
+
+[Get
+started](https://lucp12891.github.io/factomics/articles/factomics.md)
+[Methods](https://lucp12891.github.io/factomics/articles/methods.md)
+[Docker](https://lucp12891.github.io/factomics/articles/docker.md)
+[Reference](https://lucp12891.github.io/factomics/reference/index.md)
+[GitHub](https://github.com/lucp12891/factomics)
+
+## Why factomics
+
+Multi-omics studies measure the same samples through several layers
+(transcriptome, metabolome, microbiome, …). Latent factor methods
+summarise these layers into a few shared factors, but each method lives
+in its own package, with its own input format, output format and quirks.
+**factomics** gives them **one input** (a named list of *features x
+samples* matrices) and **one output** (`scores`, `loadings`, `meta` per
+method), so that every downstream function works with every method and
+methods can be compared side by side.
+
+### Matrix factorisation
+
+Block-weighted PCA, Multiple Factor Analysis and JIVE. `PCA`, `MFA`,
+`JIVE`.
+
+### Bayesian factor models
+
+Sparse, view-aware factors with automatic relevance. `MOFA`, `GFA`,
+`FABIA`.
+
+### Correlation-based
+
+Components that maximise covariance between views. `SGCCA`.
+
+### Embeddings
+
+PCA, UMAP and t-SNE of each method’s factor space.
+[`embed_results()`](https://lucp12891.github.io/factomics/reference/embed_results.md).
+
+### Clustering
+
+k-means, hierarchical or PAM, with k chosen by silhouette.
+[`cluster_results()`](https://lucp12891.github.io/factomics/reference/cluster_results.md).
+
+### Benchmark and interpret
+
+Factor matching, variance explained, top features and covariate tests.
+[`benchmark_factor_methods()`](https://lucp12891.github.io/factomics/reference/benchmark_factor_methods.md).
+
+## See it in action
+
+Every figure below comes from the simulated example data, in a few lines
+of factomics.
+
+![UMAP of factor scores coloured by group](img/gallery/embedding.png)
+
+UMAP of each method’s factors
+
+![Variance explained by each factor in each
+view](img/gallery/variance.png)
+
+Variance explained per factor and view
+
+![Adjusted Rand index between clusterings](img/gallery/agreement.png)
+
+Cluster agreement across methods
+
+![Silhouette width against number of
+clusters](img/gallery/silhouette.png)
+
+Choosing the number of clusters
+
+![Correlation of factor scores across all
+methods](img/gallery/benchmark.png)
+
+Benchmark: factor correlation across methods
+
+![Association of factors with sample
+covariates](img/gallery/associations.png)
+
+Which factors track the covariates
+
+## 60-second quick start
+
+``` r
+
+# install.packages("remotes")
+remotes::install_github("lucp12891/factomics")
+
+library(factomics)
+sim <- simulate_multiomics(n_samples = 60, seed = 1)   # or a list of your own matrices
+
+fx <- factomics(sim$data, metadata = sim$metadata,
+                methods = c("PCA", "MFA", "FABIA", "GFA", "SGCCA", "JIVE"),
+                k = 4, embeddings = c("umap", "tsne"))
+
+plot_embedding(fx$embeddings, sim$metadata, color_by = "group")
+plot_variance_explained(fx$results)
+plot_clusters(fx$clusters, "agreement")
+```
+
+Or, with nothing installed but Docker:
+
+``` bash
+docker run --rm -v "$PWD":/work ghcr.io/lucp12891/factomics:latest \
+  factomics-cli --demo --out output
+```
+
+## Where to next
+
+- [Get
+  started](https://lucp12891.github.io/factomics/articles/factomics.md):
+  the full workflow on simulated data.
+- [Methods](https://lucp12891.github.io/factomics/articles/methods.md):
+  what each method does, and how to run and tune it.
+- [Embeddings and
+  visualisation](https://lucp12891.github.io/factomics/articles/visualization.md):
+  PCA, UMAP, t-SNE, heatmaps, loadings.
+- [Clustering](https://lucp12891.github.io/factomics/articles/clustering.md):
+  finding sample subgroups from the factors.
+- [Benchmarking
+  methods](https://lucp12891.github.io/factomics/articles/benchmarking.md):
+  do the methods agree, and which recovers the truth?
+- [Your own
+  data](https://lucp12891.github.io/factomics/articles/own-data.md):
+  reading files, preprocessing and metadata.
+- [Docker and command
+  line](https://lucp12891.github.io/factomics/articles/docker.md): the
+  container and `factomics-cli`.
+
+# Package index
+
+## One-call workflow
+
+- [`factomics()`](https://lucp12891.github.io/factomics/reference/factomics.md)
+  : Run a complete multi-omics factor analysis workflow in one call
+- [`export_results()`](https://lucp12891.github.io/factomics/reference/export_results.md)
+  : Write factor scores, loadings and summaries to CSV files
+
+## Fitting factor models
+
+- [`run_factor_pipeline()`](https://lucp12891.github.io/factomics/reference/run_factor_pipeline.md)
+  : Run multi-omics factor analysis pipeline
+- [`list_factor_methods()`](https://lucp12891.github.io/factomics/reference/list_factor_methods.md)
+  : List the factor-analysis methods supported by factomics
+- [`simulate_multiomics()`](https://lucp12891.github.io/factomics/reference/simulate_multiomics.md)
+  : Simulate a multi-omics data set with known latent factors
+
+## Embeddings
+
+- [`compute_embedding()`](https://lucp12891.github.io/factomics/reference/compute_embedding.md)
+  : Compute a 2-D (or n-D) embedding of a samples x features matrix
+- [`embed_results()`](https://lucp12891.github.io/factomics/reference/embed_results.md)
+  : Embed the factor scores of every method (and the raw data)
+- [`plot_embedding()`](https://lucp12891.github.io/factomics/reference/plot_embedding.md)
+  : Plot embeddings coloured by metadata or clusters
+
+## Clustering
+
+- [`cluster_samples()`](https://lucp12891.github.io/factomics/reference/cluster_samples.md)
+  : Cluster samples, choosing the number of clusters by silhouette
+- [`cluster_results()`](https://lucp12891.github.io/factomics/reference/cluster_results.md)
+  : Cluster the samples on each method's factor scores
+- [`compare_clusterings()`](https://lucp12891.github.io/factomics/reference/compare_clusterings.md)
+  : Compare clusterings across methods (and against known labels)
+- [`adjusted_rand_index()`](https://lucp12891.github.io/factomics/reference/adjusted_rand_index.md)
+  : Adjusted Rand index between two partitions
+- [`plot_clusters()`](https://lucp12891.github.io/factomics/reference/plot_clusters.md)
+  : Plot clustering quality across methods
+
+## Interpretation
+
+- [`variance_explained()`](https://lucp12891.github.io/factomics/reference/variance_explained.md)
+  : Variance explained by each factor in each view
+- [`plot_variance_explained()`](https://lucp12891.github.io/factomics/reference/plot_variance_explained.md)
+  : Plot variance explained per factor and view
+- [`factor_associations()`](https://lucp12891.github.io/factomics/reference/factor_associations.md)
+  : Test association between factors and sample covariates
+- [`plot_factor_associations()`](https://lucp12891.github.io/factomics/reference/plot_factor_associations.md)
+  : Plot factor-covariate associations
+- [`plot_top_loadings()`](https://lucp12891.github.io/factomics/reference/plot_top_loadings.md)
+  : Plot the top-weighted features of a factor
+- [`plot_factor_heatmap()`](https://lucp12891.github.io/factomics/reference/plot_factor_heatmap.md)
+  : Heatmap of factor scores, ordered by a sample annotation
+- [`plot_factor_scores()`](https://lucp12891.github.io/factomics/reference/plot_factor_scores.md)
+  : Scatter plot of two factors for one or more methods
+
+## Comparing methods
+
+- [`benchmark_factor_methods()`](https://lucp12891.github.io/factomics/reference/benchmark_factor_methods.md)
+  : Compare and benchmark multiple factor analysis results
+- [`build_loading_comparison()`](https://lucp12891.github.io/factomics/reference/build_loading_comparison.md)
+  : Build a loading comparison object aligned across methods
+- [`plot_scores_scatter_grid()`](https://lucp12891.github.io/factomics/reference/plot_scores_scatter_grid.md)
+  : Plot factor scores for multiple methods (scatter grid)
+- [`plot_scores_lollipop_grid()`](https://lucp12891.github.io/factomics/reference/plot_scores_lollipop_grid.md)
+  : Plot factor scores as lollipop charts for multiple methods
+
+## Metadata and helpers
+
+- [`attach_scores_metadata()`](https://lucp12891.github.io/factomics/reference/attach_scores_metadata.md)
+  : Attach sample metadata to a factor-analysis results object
+  (in-place)
+- [`merge_scores_with_metadata()`](https://lucp12891.github.io/factomics/reference/merge_scores_with_metadata.md)
+  : Merge factor scores with sample metadata
+- [`scores_df_for_method()`](https://lucp12891.github.io/factomics/reference/scores_df_for_method.md)
+  : Extract scores as a labelled data frame for one method
+- [`split_loadings_by_omic()`](https://lucp12891.github.io/factomics/reference/split_loadings_by_omic.md)
+  : Split a loading data frame by feature prefix
+- [`theme_factomics()`](https://lucp12891.github.io/factomics/reference/theme_factomics.md)
+  [`factomics_palette()`](https://lucp12891.github.io/factomics/reference/theme_factomics.md)
+  : The factomics ggplot2 theme and colour palette
+- [`factomics-package`](https://lucp12891.github.io/factomics/reference/factomics-package.md)
+  : factomics: one toolbox for multi-omics factor analysis
+
+# Articles
+
+### Get started
+
+- [Get started with
+  factomics](https://lucp12891.github.io/factomics/articles/factomics.md):
+
+### Guides
+
+- [Methods and how to tune
+  them](https://lucp12891.github.io/factomics/articles/methods.md):
+- [Embeddings and visualisation: PCA, UMAP,
+  t-SNE](https://lucp12891.github.io/factomics/articles/visualization.md):
+- [Clustering samples on
+  factors](https://lucp12891.github.io/factomics/articles/clustering.md):
+- [Benchmarking factor
+  methods](https://lucp12891.github.io/factomics/articles/benchmarking.md):
+
+### Practical
+
+- [Using your own
+  data](https://lucp12891.github.io/factomics/articles/own-data.md):
+- [Docker and the command
+  line](https://lucp12891.github.io/factomics/articles/docker.md):
