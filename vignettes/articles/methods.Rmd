@@ -116,6 +116,82 @@ res_jive <- run_factor_pipeline(sim$data, methods = "JIVE", k = 3,
                                 jive_rank_individual = 1, verbose = FALSE)
 ```
 
+## RABFA: graph-guided Bayesian factor analysis
+
+RABFA (Zhang, Chang, Shen and Long, 2024, *Biometrics*) is a Bayesian factor
+model that uses prior knowledge of which features act together, typically a
+pathway graph such as KEGG, to guide which loadings are shrunk to zero:
+
+- every loading has its own Laplace shrinkage parameter, so strong signals are
+  shrunk little and noise a lot (**adaptive shrinkage**);
+- the log shrinkage parameters of features that are connected in the graph are
+  correlated through a sparse precision matrix that is itself learnt from the
+  data, so connected features tend to be selected together, while edges that
+  disagree with the data are down-weighted (**robust to wrong edges**).
+
+factomics implements the Gaussian version of the model with a Gibbs sampler
+(Metropolis-Hastings for the shrinkage parameters, block Gibbs for the graph
+precision matrix), written from the published model.
+
+The graph is a data frame of edges with columns `from` and `to`, an adjacency
+matrix, or one adjacency matrix per view. Feature names may be plain (`TP53`)
+or view-prefixed (`rna::TP53`); edges between different views are ignored, as
+in the paper. Here we build the graph that the simulation actually used, by
+connecting the features loaded on the same true factor:
+
+```{r}
+W <- sim$truth$W
+pathways <- do.call(rbind, lapply(names(W), function(v)
+  do.call(rbind, lapply(seq_len(ncol(W[[v]])), function(f) {
+    on <- rownames(W[[v]])[W[[v]][, f] != 0]
+    data.frame(from = on[1], to = on[-1], view = v)   # star-shaped pathway
+  }))))
+edges <- data.frame(from = paste0(pathways$view, "::", pathways$from),
+                    to   = paste0(pathways$view, "::", pathways$to))
+head(edges, 3)
+```
+
+```{r}
+res_rabfa <- run_factor_pipeline(sim$data, methods = "RABFA", k = 4,
+                                 rabfa_graph = edges,
+                                 rabfa_iter = 1500, rabfa_burnin = 750,
+                                 verbose = FALSE)
+res_rabfa$RABFA$meta$n_edges
+```
+
+The result has the usual `scores` and `loadings` (posterior means) and, in
+`meta`, the loadings whose 95% credible interval excludes zero, the posterior
+shrinkage parameters, a BIC-type criterion, and the log-likelihood trace for
+checking convergence:
+
+```{r, fig.height = 3}
+m <- res_rabfa$RABFA$meta
+colSums(m$selected)
+plot(m$loglik_trace, type = "l", xlab = "Iteration", ylab = "Log-likelihood",
+     main = "RABFA trace (burn-in = first half)")
+```
+
+How well do the selected loadings match the true signal features?
+
+```{r}
+truth <- sim$truth$feature_labels[rownames(m$selected)]
+table(selected = rowSums(m$selected) > 0, true_signal = truth)
+```
+
+Without pathway knowledge, `build_feature_graph()` gives a data-driven graph
+(features in the same view with high correlation), and `rabfa()` is a shortcut:
+
+```{r, eval = FALSE}
+g   <- build_feature_graph(sim$data, cutoff = 0.5, max_neighbors = 5)
+fit <- rabfa(sim$data, k = 4, graph = g, iter = 5000, burnin = 2500)
+```
+
+The main tuning parameters (`rabfa_control()`) are `nu1` (overall shrinkage;
+larger is sparser) and `nu2` (how adaptive each loading's shrinkage is); the
+paper chose them, and `k`, by grid search on the BIC stored in `meta$bic`.
+`eta = 10` and `eps = 0.2` follow the paper. MCMC needs enough iterations: the
+paper used 5,000-10,000; check `loglik_trace` has flattened after burn-in.
+
 ## Running many methods together
 
 If a method fails (missing package, too few views, numerical problem) it is
@@ -124,8 +200,10 @@ skipped with a warning and the others are still returned. Use
 
 ```{r}
 res_all <- run_factor_pipeline(
-  sim$data, methods = c("PCA", "MFA", "FABIA", "GFA", "SGCCA", "JIVE"),
-  k = 4, verbose = FALSE)
+  sim$data, methods = c("PCA", "MFA", "FABIA", "GFA", "SGCCA", "JIVE",
+                       "RABFA"),
+  k = 4, rabfa_graph = edges, rabfa_iter = 1000, rabfa_burnin = 500,
+  verbose = FALSE)
 res_all
 ```
 

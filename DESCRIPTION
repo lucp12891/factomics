@@ -1,13 +1,14 @@
 Package: factomics
 Title: One Toolbox for Multi-Omics Factor Analysis
-Version: 0.1.0
+Version: 0.2.0
 Authors@R:
     person("Bernard Isekah", "Osang'ir", , "bernard.osangir@sckcen.be",
            role = c("aut", "cre"))
 Description: A unified framework for multi-omics latent factor analysis.
     Runs several factor methods (PCA, Multiple Factor Analysis, FABIA, Group
-    Factor Analysis, MOFA2, sparse generalised canonical correlation analysis
-    and JIVE) through one consistent interface and returns their scores and
+    Factor Analysis, MOFA2, sparse generalised canonical correlation analysis,
+    JIVE and the graph-guided robust adaptive-shrinkage Bayesian factor
+    analysis of Zhang et al. (2024) <doi:10.1093/biomtc/ujad014>) through one consistent interface and returns their scores and
     loadings in a common format. Provides embeddings (PCA, UMAP, t-SNE),
     clustering with automatic choice of the number of clusters, method
     benchmarking, factor interpretation (variance explained, top loadings,

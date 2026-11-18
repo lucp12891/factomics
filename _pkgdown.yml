@@ -76,6 +76,9 @@ reference:
   contents:
   - run_factor_pipeline
   - list_factor_methods
+  - rabfa
+  - rabfa_control
+  - build_feature_graph
   - simulate_multiomics
 - title: Embeddings
   contents:

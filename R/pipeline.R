@@ -5,12 +5,14 @@
 # Registry of supported methods ------------------------------------------------
 .method_registry <- function() {
   data.frame(
-    method      = c("PCA", "MFA", "FABIA", "GFA", "MOFA", "SGCCA", "JIVE"),
+    method      = c("PCA", "MFA", "FABIA", "GFA", "MOFA", "SGCCA", "JIVE",
+                    "RABFA"),
     package     = c("stats", "FactoMineR", "fabia", "GFA", "MOFA2",
-                    "mixOmics", "r.jive"),
+                    "mixOmics", "r.jive", "factomics"),
     family      = c("Matrix factorisation", "Matrix factorisation",
                     "Bayesian / biclustering", "Bayesian",
-                    "Bayesian", "Correlation-based", "Matrix factorisation"),
+                    "Bayesian", "Correlation-based", "Matrix factorisation",
+                    "Bayesian / graph-guided"),
     description = c(
       "Block-weighted PCA on concatenated views",
       "Multiple Factor Analysis (Escofier & Pages)",
@@ -18,7 +20,8 @@
       "Group Factor Analysis (Bayesian, view-specific sparsity)",
       "Multi-Omics Factor Analysis v2 (needs Python mofapy2)",
       "Sparse Generalised Canonical Correlation Analysis",
-      "Joint and Individual Variation Explained"
+      "Joint and Individual Variation Explained",
+      "Graph-guided Bayesian FA with robust adaptive shrinkage (Zhang 2024)"
     ),
     stringsAsFactors = FALSE
   )
@@ -51,7 +54,8 @@ list_factor_methods <- function() {
 #'   list of such matrices.  All matrices must share the same sample names
 #'   (column names).
 #' @param methods Character vector of method names to run, case-insensitive.
-#'   Any subset of `c("PCA", "MFA", "FABIA", "GFA", "MOFA", "SGCCA", "JIVE")`;
+#'   Any subset of
+#'   `c("PCA", "MFA", "FABIA", "GFA", "MOFA", "SGCCA", "JIVE", "RABFA")`;
 #'   see [list_factor_methods()]. Defaults to `c("FABIA", "MOFA", "GFA", "MFA")`.
 #' @param k Integer.  Target number of latent factors (default `10`).
 #' @param scale_features Logical.  If `TRUE` (default), each feature is
@@ -80,6 +84,12 @@ list_factor_methods <- function() {
 #'   all features (no sparsity).
 #' @param jive_rank_individual Integer. Rank of each view's individual
 #'   structure for JIVE (default `1`).
+#' @param rabfa_graph Optional feature graph for RABFA (edge data frame,
+#'   adjacency matrix, or per-view list); see [rabfa()] and
+#'   [build_feature_graph()]. `NULL` (default) fits RABFA without a graph.
+#' @param rabfa_iter,rabfa_burnin Total MCMC iterations and burn-in for RABFA
+#'   (defaults `2000` and `1000`).
+#' @param rabfa_control List of RABFA hyperparameters; see [rabfa_control()].
 #' @param seed Integer.  Random seed (default `21`).
 #' @param verbose Logical.  Print progress messages (default `TRUE`).
 #' @param stop_on_error Logical. If `FALSE` (default) a method that fails is
@@ -123,6 +133,10 @@ run_factor_pipeline <- function(
     pca_block_weight     = TRUE,
     sgcca_keep           = NULL,
     jive_rank_individual = 1,
+    rabfa_graph          = NULL,
+    rabfa_iter           = 2000,
+    rabfa_burnin         = 1000,
+    rabfa_control        = list(),
     seed                 = 21,
     verbose              = TRUE,
     stop_on_error        = FALSE
@@ -148,12 +162,15 @@ run_factor_pipeline <- function(
     MFA   = function() .fit_mfa(V, k, mfa_group_sizes, seed),
     PCA   = function() .fit_pca(V, k, pca_block_weight),
     SGCCA = function() .fit_sgcca(V, k, sgcca_keep),
-    JIVE  = function() .fit_jive(V, k, jive_rank_individual, seed)
+    JIVE  = function() .fit_jive(V, k, jive_rank_individual, seed),
+    RABFA = function() .fit_rabfa(V, k, rabfa_graph, rabfa_iter, rabfa_burnin,
+                                  rabfa_control, seed, verbose)
   )
 
   results <- list()
   for (m in methods) {
-    .stop_pkg(.method_registry()$package[.method_registry()$method == m])
+    pkg <- .method_registry()$package[.method_registry()$method == m]
+    if (pkg != "factomics") .stop_pkg(pkg)
     if (verbose) message("[factomics] Running ", m, " ...")
     fit <- if (stop_on_error) fitters[[m]]() else
       tryCatch(fitters[[m]](), error = function(e) {

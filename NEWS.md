@@ -1,3 +1,15 @@
+# factomics 0.2.0
+
+* New method **RABFA**: the graph-guided Bayesian factor analysis with robust
+  and adaptive shrinkage priors of Zhang, Chang, Shen and Long (2024,
+  *Biometrics*). Available as `methods = "RABFA"` in `run_factor_pipeline()`
+  and `factomics()`, or directly with `rabfa()`. Pass a feature graph (for
+  example pathway edges) with `rabfa_graph`; `build_feature_graph()` builds a
+  data-driven graph when no pathway knowledge is at hand. Hyperparameters are
+  set with `rabfa_control()`. This is an independent implementation of the
+  published model (Gaussian data).
+* `factomics-cli` gains `--graph FILE` (edge CSV with `from`, `to`) for RABFA.
+
 # factomics 0.1.0
 
 First public release.

@@ -6,7 +6,8 @@
 \title{factomics: one toolbox for multi-omics factor analysis}
 \description{
 factomics wraps several multi-omics latent factor methods (PCA, MFA, FABIA,
-GFA, MOFA2, SGCCA and JIVE) behind a single function,
+GFA, MOFA2, SGCCA, JIVE and the graph-guided RABFA of Zhang et al. 2024)
+behind a single function,
 \code{\link[=run_factor_pipeline]{run_factor_pipeline()}}, and returns their results in one common format.
 On top of that it provides embeddings (PCA, UMAP, t-SNE), clustering,
 method benchmarking, factor interpretation and plotting, and a one-call

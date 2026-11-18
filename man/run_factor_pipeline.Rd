@@ -22,6 +22,10 @@ run_factor_pipeline(
   pca_block_weight = TRUE,
   sgcca_keep = NULL,
   jive_rank_individual = 1,
+  rabfa_graph = NULL,
+  rabfa_iter = 2000,
+  rabfa_burnin = 1000,
+  rabfa_control = list(),
   seed = 21,
   verbose = TRUE,
   stop_on_error = FALSE
@@ -33,7 +37,8 @@ list of such matrices.  All matrices must share the same sample names
 (column names).}
 
 \item{methods}{Character vector of method names to run, case-insensitive.
-Any subset of \code{c("PCA", "MFA", "FABIA", "GFA", "MOFA", "SGCCA", "JIVE")};
+Any subset of
+\code{c("PCA", "MFA", "FABIA", "GFA", "MOFA", "SGCCA", "JIVE", "RABFA")};
 see \code{\link[=list_factor_methods]{list_factor_methods()}}. Defaults to \code{c("FABIA", "MOFA", "GFA", "MFA")}.}
 
 \item{k}{Integer.  Target number of latent factors (default \code{10}).}
@@ -77,6 +82,15 @@ all features (no sparsity).}
 
 \item{jive_rank_individual}{Integer. Rank of each view's individual
 structure for JIVE (default \code{1}).}
+
+\item{rabfa_graph}{Optional feature graph for RABFA (edge data frame,
+adjacency matrix, or per-view list); see \code{\link[=rabfa]{rabfa()}} and
+\code{\link[=build_feature_graph]{build_feature_graph()}}. \code{NULL} (default) fits RABFA without a graph.}
+
+\item{rabfa_iter, rabfa_burnin}{Total MCMC iterations and burn-in for RABFA
+(defaults \code{2000} and \code{1000}).}
+
+\item{rabfa_control}{List of RABFA hyperparameters; see \code{\link[=rabfa_control]{rabfa_control()}}.}
 
 \item{seed}{Integer.  Random seed (default \code{21}).}
 

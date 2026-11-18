@@ -7,7 +7,7 @@
 <!-- badges: end -->
 
 **One toolbox for multi-omics factor analysis.** Instead of learning, installing
-and reformatting data for many separate packages, `factomics` runs seven latent
+and reformatting data for many separate packages, `factomics` runs eight latent
 factor methods through a single function, returns every result in the same
 format, and adds the downstream steps you usually need: embeddings (PCA, UMAP,
 t-SNE), clustering, method benchmarking, interpretation and plots. A Docker
@@ -26,11 +26,25 @@ Website and tutorials: **<https://lucp12891.github.io/factomics/>**
 | `MOFA`  | MOFA2      | Multi-Omics Factor Analysis v2 |
 | `SGCCA` | mixOmics   | Sparse Generalised Canonical Correlation Analysis |
 | `JIVE`  | r.jive     | Joint and Individual Variation Explained |
+| `RABFA` | built in   | Graph-guided Bayesian factor analysis with robust, adaptive shrinkage (Zhang et al. 2024) |
 
 Downstream: `embed_results()` (PCA / UMAP / t-SNE), `cluster_results()`
 (k-means / hierarchical / PAM, k chosen by silhouette), `compare_clusterings()`
 (adjusted Rand index), `benchmark_factor_methods()`, `variance_explained()`,
 `factor_associations()`, `plot_top_loadings()`, `plot_factor_heatmap()` and more.
+
+### Graph-guided factor analysis (RABFA)
+
+`RABFA` lets prior knowledge of which features act together (for example genes
+in the same KEGG pathway) guide the factor loadings, and stays robust when that
+graph contains wrong edges:
+
+```r
+# edges: data frame with columns from, to (feature names, within a view)
+fit <- rabfa(sim$data, k = 4, graph = edges, iter = 5000, burnin = 2500)
+# or, with no pathway database, a data-driven graph:
+fit <- rabfa(sim$data, k = 4, graph = build_feature_graph(sim$data))
+```
 
 ## Installation
 
@@ -105,6 +119,7 @@ Please also cite the method(s) you use:
 - **MFA**: Escofier & Pages (1994) *Computational Statistics & Data Analysis* 18:121-140.
 - **SGCCA**: Tenenhaus et al. (2014) *Biostatistics* 15:569-583.
 - **JIVE**: Lock et al. (2013) *Annals of Applied Statistics* 7:523-542.
+- **RABFA**: Zhang, Chang, Shen & Long (2024) *Biometrics* 80(1):ujad014.
 
 ## License
 

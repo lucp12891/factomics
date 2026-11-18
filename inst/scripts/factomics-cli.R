@@ -24,7 +24,8 @@ Options:
   --metadata FILE       Sample metadata CSV (optional).
   --sample-col NAME     Sample-ID column in metadata (default: sample).
   --methods LIST        Comma-separated methods (default: PCA,MFA,FABIA,GFA).
-                        Available: PCA,MFA,FABIA,GFA,MOFA,SGCCA,JIVE
+                        Available: PCA,MFA,FABIA,GFA,MOFA,SGCCA,JIVE,RABFA
+  --graph FILE          Feature graph for RABFA: CSV with columns from,to.
   --k N                 Number of factors (default: 5).
   --embeddings LIST     Comma-separated: umap,tsne,pca (default: umap,tsne).
   --cluster METHOD      kmeans | hclust | pam | none (default: kmeans).
@@ -44,7 +45,8 @@ if (!length(args) || "--help" %in% args) { usage(); quit(status = 0) }
 opt <- list(view = character(0), metadata = NULL, sample_col = "sample",
             methods = "PCA,MFA,FABIA,GFA", k = "5", embeddings = "umap,tsne",
             cluster = "kmeans", n_clusters = "2:6", color_by = NULL,
-            scale = TRUE, seed = "21", out = "factomics_output", demo = FALSE)
+            scale = TRUE, seed = "21", out = "factomics_output", demo = FALSE,
+            graph = NULL)
 i <- 1
 while (i <= length(args)) {
   a <- args[i]
@@ -60,6 +62,7 @@ while (i <= length(args)) {
     "--n-clusters" = { opt$n_clusters <- val; i <- i + 1 },
     "--color-by"   = { opt$color_by <- val; i <- i + 1 },
     "--seed"       = { opt$seed <- val; i <- i + 1 },
+    "--graph"      = { opt$graph <- val; i <- i + 1 },
     "--out"        = { opt$out <- val; i <- i + 1 },
     "--no-scale"   = { opt$scale <- FALSE },
     "--demo"       = { opt$demo <- TRUE },
@@ -103,6 +106,8 @@ fx <- factomics(views, metadata = metadata, sample_col = opt$sample_col,
                 embeddings = emb_types,
                 cluster_method = if (opt$cluster == "none") NULL else opt$cluster,
                 n_clusters = nc, scale_features = opt$scale,
+                rabfa_graph = if (is.null(opt$graph)) NULL else
+                  utils::read.csv(opt$graph, stringsAsFactors = FALSE),
                 seed = as.integer(opt$seed))
 print(fx)
 
