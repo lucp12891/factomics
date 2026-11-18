@@ -1,6 +1,6 @@
 Package: factomics
 Title: One Toolbox for Multi-Omics Factor Analysis
-Version: 0.2.0
+Version: 0.1.0
 Authors@R:
     person("Bernard Isekah", "Osang'ir", , "bernard.osangir@sckcen.be",
            role = c("aut", "cre"))
