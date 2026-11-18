@@ -53,15 +53,16 @@ shows what is available on your machine:
 ``` r
 
 list_factor_methods()[, c("method", "package", "installed")]
-#>   method    package installed
-#> 1    PCA      stats      TRUE
-#> 2    MFA FactoMineR      TRUE
-#> 3  FABIA      fabia      TRUE
-#> 4    GFA        GFA      TRUE
-#> 5   MOFA      MOFA2      TRUE
-#> 6  SGCCA   mixOmics      TRUE
-#> 7   JIVE     r.jive      TRUE
-#> 8  RABFA  factomics      TRUE
+#>      method    package installed
+#> 1       PCA      stats      TRUE
+#> 2       MFA FactoMineR      TRUE
+#> 3     FABIA      fabia      TRUE
+#> 4 FABIA_ENS      fabia      TRUE
+#> 5       GFA        GFA      TRUE
+#> 6      MOFA      MOFA2      TRUE
+#> 7     SGCCA   mixOmics      TRUE
+#> 8      JIVE     r.jive      TRUE
+#> 9     RABFA  factomics      TRUE
 ```
 
 ``` r
@@ -75,10 +76,10 @@ res <- run_factor_pipeline(
 res
 #> <factomics_results>
 #>   60 samples, 3 view(s): transcriptome (200), metabolome (80), microbiome (50)
-#>   PCA    4 factors
-#>   MFA    4 factors
-#>   FABIA  4 factors
-#>   GFA    4 factors
+#>   PCA       4 factors
+#>   MFA       4 factors
+#>   FABIA     4 factors
+#>   GFA       4 factors
 ```
 
 Every method has the same three slots: `scores` (samples x factors),

@@ -26,6 +26,7 @@
     <li><a class="dropdown-item" href="../articles/visualization.html">Embeddings and visualisation (PCA, UMAP, t-SNE)</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering samples on factors</a></li>
     <li><a class="dropdown-item" href="../articles/benchmarking.html">Benchmarking factor methods</a></li>
+    <li><a class="dropdown-item" href="../articles/fabia-ensemble.html">FABIA versus ensemble FABIA</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Practical</h6></li>
     <li><a class="dropdown-item" href="../articles/own-data.html">Using your own data</a></li>
@@ -50,6 +51,11 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="factomics-010">factomics 0.1.0<a class="anchor" aria-label="anchor" href="#factomics-010"></a></h2>
 <p>First public release.</p>
+<div class="section level3">
+<h3 id="ensemble-fabia-0-1-0">Ensemble FABIA<a class="anchor" aria-label="anchor" href="#ensemble-fabia-0-1-0"></a></h3>
+<ul><li>New method <strong>FABIA_ENS</strong>: ensemble FABIA. FABIA is run many times with different seeds (and optionally on subsamples); the biclusters of all runs are grouped by Jaccard similarity with complete-linkage clustering, and the groups found in most runs are kept as robust biclusters and factors, as in Chapter 10 of <em>Applied Biclustering Methods</em> (Kasim et al. 2016). Settings in <code><a href="../reference/fabia_ensemble_control.html">fabia_ensemble_control()</a></code>; shortcut <code><a href="../reference/fabia_ensemble.html">fabia_ensemble()</a></code>; reliability plot <code><a href="../reference/plot_fabia_ensemble.html">plot_fabia_ensemble()</a></code>.</li>
+<li>New <code><a href="../reference/factor_stability.html">factor_stability()</a></code> and <code><a href="../reference/plot_factor_stability.html">plot_factor_stability()</a></code>: refit methods with several seeds and measure how much the factors change, and how well true factors are recovered, e.g. to compare plain and ensemble FABIA.</li>
+</ul></div>
 <div class="section level3">
 <h3 id="graph-guided-factor-analysis-0-1-0">Graph-guided factor analysis<a class="anchor" aria-label="anchor" href="#graph-guided-factor-analysis-0-1-0"></a></h3>
 <ul><li>New method <strong>RABFA</strong>: the graph-guided Bayesian factor analysis with robust and adaptive shrinkage priors of Zhang, Chang, Shen and Long (2024, <em>Biometrics</em>). Available as <code>methods = "RABFA"</code> in <code><a href="../reference/run_factor_pipeline.html">run_factor_pipeline()</a></code> and <code><a href="../reference/factomics.html">factomics()</a></code>, or directly with <code><a href="../reference/rabfa.html">rabfa()</a></code>. Pass a feature graph (for example pathway edges) with <code>rabfa_graph</code>; <code><a href="../reference/build_feature_graph.html">build_feature_graph()</a></code> builds a data-driven graph when no pathway knowledge is at hand. Hyperparameters are set with <code><a href="../reference/rabfa_control.html">rabfa_control()</a></code>. This is an independent implementation of the published model (Gaussian data).</li>

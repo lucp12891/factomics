@@ -4,6 +4,27 @@
 
 First public release.
 
+### Ensemble FABIA
+
+- New method **FABIA_ENS**: ensemble FABIA. FABIA is run many times with
+  different seeds (and optionally on subsamples); the biclusters of all
+  runs are grouped by Jaccard similarity with complete-linkage
+  clustering, and the groups found in most runs are kept as robust
+  biclusters and factors, as in Chapter 10 of *Applied Biclustering
+  Methods* (Kasim et al. 2016). Settings in
+  [`fabia_ensemble_control()`](https://lucp12891.github.io/factomics/reference/fabia_ensemble_control.md);
+  shortcut
+  [`fabia_ensemble()`](https://lucp12891.github.io/factomics/reference/fabia_ensemble.md);
+  reliability plot
+  [`plot_fabia_ensemble()`](https://lucp12891.github.io/factomics/reference/plot_fabia_ensemble.md).
+- New
+  [`factor_stability()`](https://lucp12891.github.io/factomics/reference/factor_stability.md)
+  and
+  [`plot_factor_stability()`](https://lucp12891.github.io/factomics/reference/plot_factor_stability.md):
+  refit methods with several seeds and measure how much the factors
+  change, and how well true factors are recovered, e.g. to compare plain
+  and ensemble FABIA.
+
 ### Graph-guided factor analysis
 
 - New method **RABFA**: the graph-guided Bayesian factor analysis with

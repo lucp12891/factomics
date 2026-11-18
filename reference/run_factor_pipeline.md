@@ -17,6 +17,7 @@ run_factor_pipeline(
   mfa_group_sizes = NULL,
   fabia_alpha = 0.01,
   fabia_cyc = 1000,
+  fabia_ens_control = list(),
   mofa_outfile = file.path(tempdir(), "mofa_model.hdf5"),
   mofa_convergence = "slow",
   mofa_maxiter = 2000,
@@ -49,7 +50,7 @@ run_factor_pipeline(
 
   Character vector of method names to run, case-insensitive. Any subset
   of
-  `c("PCA", "MFA", "FABIA", "GFA", "MOFA", "SGCCA", "JIVE", "RABFA")`;
+  `c("PCA", "MFA", "FABIA", "FABIA_ENS", "GFA", "MOFA", "SGCCA", "JIVE", "RABFA")`;
   see
   [`list_factor_methods()`](https://lucp12891.github.io/factomics/reference/list_factor_methods.md).
   Defaults to `c("FABIA", "MOFA", "GFA", "MFA")`.
@@ -75,7 +76,14 @@ run_factor_pipeline(
 
 - fabia_cyc:
 
-  Integer. Number of FABIA cycles (default `1000`).
+  Integer. Number of FABIA cycles (default `1000`). Also used by
+  `"FABIA_ENS"`, together with `fabia_alpha`.
+
+- fabia_ens_control:
+
+  List of settings for ensemble FABIA (`"FABIA_ENS"`): number of runs,
+  subsampling, similarity and reliability thresholds; see
+  [`fabia_ensemble_control()`](https://lucp12891.github.io/factomics/reference/fabia_ensemble_control.md).
 
 - mofa_outfile:
 
@@ -197,8 +205,8 @@ res <- run_factor_pipeline(sim$data, methods = c("PCA", "MFA"), k = 3,
 res
 #> <factomics_results>
 #>   40 samples, 3 view(s): transcriptome (200), metabolome (80), microbiome (50)
-#>   PCA    3 factors
-#>   MFA    3 factors
+#>   PCA       3 factors
+#>   MFA       3 factors
 head(res$MFA$scores)
 #>              F1         F2         F3
 #> S001 -1.6155192  0.7839443  0.4786979

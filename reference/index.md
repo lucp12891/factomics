@@ -13,6 +13,12 @@
   : Run multi-omics factor analysis pipeline
 - [`list_factor_methods()`](https://lucp12891.github.io/factomics/reference/list_factor_methods.md)
   : List the factor-analysis methods supported by factomics
+- [`fabia_ensemble()`](https://lucp12891.github.io/factomics/reference/fabia_ensemble.md)
+  : Ensemble FABIA: robust biclusters and factors from many FABIA runs
+- [`fabia_ensemble_control()`](https://lucp12891.github.io/factomics/reference/fabia_ensemble_control.md)
+  : Settings for ensemble FABIA
+- [`plot_fabia_ensemble()`](https://lucp12891.github.io/factomics/reference/plot_fabia_ensemble.md)
+  : Plot the reliability of ensemble FABIA biclusters
 - [`rabfa()`](https://lucp12891.github.io/factomics/reference/rabfa.md)
   : Robust and adaptive-shrinkage Bayesian factor analysis (RABFA)
 - [`rabfa_control()`](https://lucp12891.github.io/factomics/reference/rabfa_control.md)
@@ -71,6 +77,10 @@
   : Plot factor scores for multiple methods (scatter grid)
 - [`plot_scores_lollipop_grid()`](https://lucp12891.github.io/factomics/reference/plot_scores_lollipop_grid.md)
   : Plot factor scores as lollipop charts for multiple methods
+- [`factor_stability()`](https://lucp12891.github.io/factomics/reference/factor_stability.md)
+  : Stability of factor methods across random seeds
+- [`plot_factor_stability()`](https://lucp12891.github.io/factomics/reference/plot_factor_stability.md)
+  : Plot the stability of factor methods across seeds
 
 ## Metadata and helpers
 

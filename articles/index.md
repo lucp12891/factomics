@@ -15,6 +15,8 @@
   factors](https://lucp12891.github.io/factomics/articles/clustering.md):
 - [Benchmarking factor
   methods](https://lucp12891.github.io/factomics/articles/benchmarking.md):
+- [FABIA versus ensemble
+  FABIA](https://lucp12891.github.io/factomics/articles/fabia-ensemble.md):
 
 ### Practical
 

@@ -26,6 +26,7 @@
     <li><a class="dropdown-item" href="../articles/visualization.html">Embeddings and visualisation (PCA, UMAP, t-SNE)</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering samples on factors</a></li>
     <li><a class="dropdown-item" href="../articles/benchmarking.html">Benchmarking factor methods</a></li>
+    <li><a class="dropdown-item" href="../articles/fabia-ensemble.html">FABIA versus ensemble FABIA</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Practical</h6></li>
     <li><a class="dropdown-item" href="../articles/own-data.html">Using your own data</a></li>
@@ -67,45 +68,26 @@ its family, a short description and whether that package is installed.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">list_factor_methods</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> +----------------------------+                                          </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> |............................|                                          </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> |............................|                                          </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> |..............########......|  #######    #    ######    ###      #    </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> |..............########......|  #         # #   #     #    #      # #   </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> |.....####.....########......|  #        #   #  #     #    #     #   #  </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> |.....####.....########......|  #####   #     # ######     #    #     # </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> |.....####...................|  #       ####### #     #    #    ####### </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> |.....####...........###.....|  #       #     # #     #    #    #     # </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> |....................###.....|  #       #     # ######    ###   #     # </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> |....................###.....|                                          </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> |............................|                                          </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> +----------------------------+                                          </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Citation: S. Hochreiter et al.,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> FABIA: Factor Analysis for Bicluster Acquisition,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Bioinformatics 26(12):1520-1527, 2010.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> BibTex: enter 'toBibtex(citation("fabia"))'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Homepage: http://www.bioinf.jku.at/software/fabia/fabia.html</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> FABIA Package Version 2.58.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   method    package                  family</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    PCA      stats    Matrix factorisation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    MFA FactoMineR    Matrix factorisation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  FABIA      fabia Bayesian / biclustering</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    GFA        GFA                Bayesian</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   MOFA      MOFA2                Bayesian</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  SGCCA   mixOmics       Correlation-based</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7   JIVE     r.jive    Matrix factorisation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  RABFA  factomics Bayesian / graph-guided</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                            description</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                             Block-weighted PCA on concatenated views</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                          Multiple Factor Analysis (Escofier &amp; Pages)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                            Factor Analysis for Bicluster Acquisition</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4             Group Factor Analysis (Bayesian, view-specific sparsity)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5                Multi-Omics Factor Analysis v2 (needs Python mofapy2)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6                    Sparse Generalised Canonical Correlation Analysis</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7                             Joint and Individual Variation Explained</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8 Graph-guided Bayesian FA with robust adaptive shrinkage (Zhang 2024)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      method    package                  family</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       PCA      stats    Matrix factorisation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       MFA FactoMineR    Matrix factorisation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     FABIA      fabia Bayesian / biclustering</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 FABIA_ENS      fabia Ensemble / biclustering</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       GFA        GFA                Bayesian</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      MOFA      MOFA2                Bayesian</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7     SGCCA   mixOmics       Correlation-based</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8      JIVE     r.jive    Matrix factorisation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     RABFA  factomics Bayesian / graph-guided</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                             description</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                              Block-weighted PCA on concatenated views</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                           Multiple Factor Analysis (Escofier &amp; Pages)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                             Factor Analysis for Bicluster Acquisition</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 Ensemble FABIA: robust biclusters over many runs (Kasim 2016, Ch. 10)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5              Group Factor Analysis (Bayesian, view-specific sparsity)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                 Multi-Omics Factor Analysis v2 (needs Python mofapy2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                     Sparse Generalised Canonical Correlation Analysis</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                              Joint and Individual Variation Explained</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  Graph-guided Bayesian FA with robust adaptive shrinkage (Zhang 2024)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   installed</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1      TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2      TRUE</span>
@@ -115,6 +97,7 @@ its family, a short description and whether that package is installed.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6      TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7      TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8      TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      TRUE</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

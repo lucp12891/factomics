@@ -49,6 +49,7 @@
     <li><a class="dropdown-item" href="../articles/visualization.html">Embeddings and visualisation (PCA, UMAP, t-SNE)</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering samples on factors</a></li>
     <li><a class="dropdown-item" href="../articles/benchmarking.html">Benchmarking factor methods</a></li>
+    <li><a class="dropdown-item" href="../articles/fabia-ensemble.html">FABIA versus ensemble FABIA</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Practical</h6></li>
     <li><a class="dropdown-item" href="../articles/own-data.html">Using your own data</a></li>
@@ -90,17 +91,18 @@
 <p>All methods are called the same way, through
 <code>run_factor_pipeline(X, methods, k)</code>. Method-specific
 settings are ordinary arguments with a method prefix
-(<code>fabia_*</code>, <code>mofa_*</code>, <code>gfa_*</code>,
-<code>pca_*</code>, <code>sgcca_*</code>, <code>jive_*</code>).</p>
+(<code>fabia_*</code>, <code>fabia_ens_*</code>, <code>mofa_*</code>,
+<code>gfa_*</code>, <code>pca_*</code>, <code>sgcca_*</code>,
+<code>jive_*</code>, <code>rabfa_*</code>).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="../reference/list_factor_methods.html">list_factor_methods</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"method"</span>, <span class="st">"package"</span>, <span class="st">"family"</span>,</span>
 <span>                                      <span class="st">"description"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
-<col width="6%">
+<col width="8%">
 <col width="9%">
-<col width="21%">
-<col width="62%">
+<col width="20%">
+<col width="60%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">method</th>
@@ -128,32 +130,39 @@ settings are ordinary arguments with a method prefix
 <td align="left">Factor Analysis for Bicluster Acquisition</td>
 </tr>
 <tr class="even">
+<td align="left">FABIA_ENS</td>
+<td align="left">fabia</td>
+<td align="left">Ensemble / biclustering</td>
+<td align="left">Ensemble FABIA: robust biclusters over many runs (Kasim
+2016, Ch. 10)</td>
+</tr>
+<tr class="odd">
 <td align="left">GFA</td>
 <td align="left">GFA</td>
 <td align="left">Bayesian</td>
 <td align="left">Group Factor Analysis (Bayesian, view-specific
 sparsity)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">MOFA</td>
 <td align="left">MOFA2</td>
 <td align="left">Bayesian</td>
 <td align="left">Multi-Omics Factor Analysis v2 (needs Python
 mofapy2)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">SGCCA</td>
 <td align="left">mixOmics</td>
 <td align="left">Correlation-based</td>
 <td align="left">Sparse Generalised Canonical Correlation Analysis</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">JIVE</td>
 <td align="left">r.jive</td>
 <td align="left">Matrix factorisation</td>
 <td align="left">Joint and Individual Variation Explained</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">RABFA</td>
 <td align="left">factomics</td>
 <td align="left">Bayesian / graph-guided</td>
@@ -204,6 +213,18 @@ driven by a small set of features and a subset of samples.
 <code class="sourceCode R"><span><span class="va">res_fabia</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_factor_pipeline.html">run_factor_pipeline</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">data</span>, methods <span class="op">=</span> <span class="st">"FABIA"</span>, k <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>                                 fabia_alpha <span class="op">=</span> <span class="fl">0.05</span>, fabia_cyc <span class="op">=</span> <span class="fl">500</span>,</span>
 <span>                                 verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p>Because FABIA starts from random values, its biclusters can change
+from run to run. <strong>Ensemble FABIA</strong>
+(<code>"FABIA_ENS"</code>) runs it many times and keeps only the
+biclusters found in most runs; see <a href="fabia-ensemble.html">FABIA
+versus ensemble FABIA</a>.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res_ens</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_factor_pipeline.html">run_factor_pipeline</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">data</span>, methods <span class="op">=</span> <span class="st">"FABIA_ENS"</span>, k <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>                               fabia_ens_control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>runs <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>,</span>
+<span>                               verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">res_ens</span><span class="op">$</span><span class="va">FABIA_ENS</span><span class="op">$</span><span class="va">meta</span><span class="op">$</span><span class="va">reliability</span></span>
+<span><span class="co">#&gt; F1 F2 F3 </span></span>
+<span><span class="co">#&gt;  1  1  1</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="gfa-group-factor-analysis">GFA: Group Factor Analysis<a class="anchor" aria-label="anchor" href="#gfa-group-factor-analysis"></a>
@@ -220,7 +241,7 @@ Gibbs sampler. More iterations give more stable factors.</p>
 handles missing values and different likelihoods. It runs in Python
 (<code>mofapy2</code>) via reticulate. Either install
 <code>mofapy2</code> and tell factomics where that Python is:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/run_factor_pipeline.html">run_factor_pipeline</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">data</span>, methods <span class="op">=</span> <span class="st">"MOFA"</span>, k <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>                    mofa_python <span class="op">=</span> <span class="st">"/usr/bin/python3"</span><span class="op">)</span></span></code></pre></div>
 <p>or let MOFA2 build its own Python environment with
@@ -228,270 +249,10 @@ handles missing values and different likelihoods. It runs in Python
 set up already. <code>mofa_convergence</code> (<code>"fast"</code>,
 <code>"medium"</code>, <code>"slow"</code>) trades speed for
 precision.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_mofa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_factor_pipeline.html">run_factor_pipeline</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">data</span>, methods <span class="op">=</span> <span class="st">"MOFA"</span>, k <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>                                mofa_convergence <span class="op">=</span> <span class="st">"fast"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;         #########################################################</span></span>
-<span><span class="co">#&gt;         ###           __  __  ____  ______                    ### </span></span>
-<span><span class="co">#&gt;         ###          |  \/  |/ __ \|  ____/\    _             ### </span></span>
-<span><span class="co">#&gt;         ###          | \  / | |  | | |__ /  \ _| |_           ### </span></span>
-<span><span class="co">#&gt;         ###          | |\/| | |  | |  __/ /\ \_   _|          ###</span></span>
-<span><span class="co">#&gt;         ###          | |  | | |__| | | / ____ \|_|            ###</span></span>
-<span><span class="co">#&gt;         ###          |_|  |_|\____/|_|/_/    \_\              ###</span></span>
-<span><span class="co">#&gt;         ###                                                   ### </span></span>
-<span><span class="co">#&gt;         ######################################################### </span></span>
-<span><span class="co">#&gt;          </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; use_float32 set to True: replacing float64 arrays by float32 arrays to speed up computations...</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Scaling views to unit variance...</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Successfully loaded view='transcriptome' group='group1' with N=60 samples and D=200 features...</span></span>
-<span><span class="co">#&gt; Successfully loaded view='metabolome' group='group1' with N=60 samples and D=80 features...</span></span>
-<span><span class="co">#&gt; Successfully loaded view='microbiome' group='group1' with N=60 samples and D=50 features...</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Model options:</span></span>
-<span><span class="co">#&gt; - Automatic Relevance Determination prior on the factors: False</span></span>
-<span><span class="co">#&gt; - Automatic Relevance Determination prior on the weights: True</span></span>
-<span><span class="co">#&gt; - Spike-and-slab prior on the factors: False</span></span>
-<span><span class="co">#&gt; - Spike-and-slab prior on the weights: False</span></span>
-<span><span class="co">#&gt; Likelihoods:</span></span>
-<span><span class="co">#&gt; - View 0 (transcriptome): gaussian</span></span>
-<span><span class="co">#&gt; - View 1 (metabolome): gaussian</span></span>
-<span><span class="co">#&gt; - View 2 (microbiome): gaussian</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ######################################</span></span>
-<span><span class="co">#&gt; ## Training the model with seed 21 ##</span></span>
-<span><span class="co">#&gt; ######################################</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ELBO before training: -85258.96 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Iteration 1: time=0.01, ELBO=-28288.49, deltaELBO=56970.475 (66.82051012%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 2: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 3: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 4: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 5: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 6: time=0.00, ELBO=-24688.46, deltaELBO=3600.025 (4.22245920%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 7: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 8: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 9: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 10: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 11: time=0.00, ELBO=-24669.17, deltaELBO=19.295 (0.02263060%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 12: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 13: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 14: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 15: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 16: time=0.00, ELBO=-24656.99, deltaELBO=12.182 (0.01428835%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 17: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 18: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 19: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 20: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 21: time=0.00, ELBO=-24649.11, deltaELBO=7.881 (0.00924327%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 22: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 23: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 24: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 25: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 26: time=0.00, ELBO=-24643.68, deltaELBO=5.426 (0.00636403%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 27: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 28: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 29: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 30: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 31: time=0.00, ELBO=-24639.59, deltaELBO=4.096 (0.00480409%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 32: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 33: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 34: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 35: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 36: time=0.00, ELBO=-24636.18, deltaELBO=3.406 (0.00399537%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 37: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 38: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 39: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 40: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 41: time=0.00, ELBO=-24633.17, deltaELBO=3.010 (0.00353094%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 42: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 43: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 44: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 45: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 46: time=0.00, ELBO=-24630.46, deltaELBO=2.709 (0.00317771%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 47: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 48: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 49: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 50: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 51: time=0.00, ELBO=-24628.07, deltaELBO=2.392 (0.00280561%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 52: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 53: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 54: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 55: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 56: time=0.00, ELBO=-24625.99, deltaELBO=2.076 (0.00243516%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 57: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 58: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 59: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 60: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 61: time=0.00, ELBO=-24624.19, deltaELBO=1.806 (0.00211795%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 62: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 63: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 64: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 65: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 66: time=0.00, ELBO=-24622.59, deltaELBO=1.591 (0.00186627%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 67: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 68: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 69: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 70: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 71: time=0.00, ELBO=-24621.18, deltaELBO=1.418 (0.00166344%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 72: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 73: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 74: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 75: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 76: time=0.00, ELBO=-24619.89, deltaELBO=1.283 (0.00150535%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 77: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 78: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 79: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 80: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 81: time=0.00, ELBO=-24618.73, deltaELBO=1.163 (0.00136439%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 82: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 83: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 84: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 85: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 86: time=0.00, ELBO=-24617.66, deltaELBO=1.067 (0.00125196%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 87: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 88: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 89: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 90: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 91: time=0.00, ELBO=-24616.68, deltaELBO=0.979 (0.00114793%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 92: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 93: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 94: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 95: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 96: time=0.00, ELBO=-24615.78, deltaELBO=0.905 (0.00106163%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 97: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 98: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 99: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 100: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 101: time=0.00, ELBO=-24614.94, deltaELBO=0.837 (0.00098202%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 102: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 103: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 104: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 105: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 106: time=0.00, ELBO=-24614.16, deltaELBO=0.782 (0.00091721%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 107: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 108: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 109: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 110: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 111: time=0.00, ELBO=-24613.43, deltaELBO=0.729 (0.00085527%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 112: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 113: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 114: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 115: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 116: time=0.00, ELBO=-24612.75, deltaELBO=0.681 (0.00079877%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 117: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 118: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 119: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 120: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 121: time=0.00, ELBO=-24612.10, deltaELBO=0.646 (0.00075741%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 122: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 123: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 124: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 125: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 126: time=0.00, ELBO=-24611.49, deltaELBO=0.613 (0.00071873%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 127: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 128: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 129: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 130: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 131: time=0.00, ELBO=-24610.90, deltaELBO=0.589 (0.00069124%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 132: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 133: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 134: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 135: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 136: time=0.00, ELBO=-24610.32, deltaELBO=0.576 (0.00067585%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 137: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 138: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 139: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 140: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 141: time=0.00, ELBO=-24609.73, deltaELBO=0.591 (0.00069267%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 142: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 143: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 144: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 145: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 146: time=0.00, ELBO=-24609.06, deltaELBO=0.670 (0.00078584%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 147: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 148: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 149: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 150: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 151: time=0.00, ELBO=-24608.11, deltaELBO=0.952 (0.00111659%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 152: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 153: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 154: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 155: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 156: time=0.00, ELBO=-24606.24, deltaELBO=1.871 (0.00219403%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 157: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 158: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 159: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 160: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 161: time=0.00, ELBO=-24603.31, deltaELBO=2.927 (0.00343262%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 162: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 163: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 164: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 165: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 166: time=0.00, ELBO=-24601.39, deltaELBO=1.922 (0.00225473%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 167: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 168: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 169: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 170: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 171: time=0.00, ELBO=-24600.21, deltaELBO=1.184 (0.00138927%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 172: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 173: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 174: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 175: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 176: time=0.00, ELBO=-24599.34, deltaELBO=0.872 (0.00102255%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 177: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 178: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 179: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 180: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 181: time=0.00, ELBO=-24598.65, deltaELBO=0.683 (0.00080082%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 182: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 183: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 184: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 185: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 186: time=0.00, ELBO=-24598.09, deltaELBO=0.568 (0.00066592%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 187: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 188: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 189: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 190: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 191: time=0.01, ELBO=-24597.60, deltaELBO=0.490 (0.00057448%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 192: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 193: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 194: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 195: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 196: time=0.00, ELBO=-24597.17, deltaELBO=0.429 (0.00050283%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 197: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 198: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 199: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 200: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 201: time=0.00, ELBO=-24596.78, deltaELBO=0.389 (0.00045569%), Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 202: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 203: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 204: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 205: time=0.00, Factors=4</span></span>
-<span><span class="co">#&gt; Iteration 206: time=0.00, ELBO=-24596.43, deltaELBO=0.348 (0.00040855%), Factors=4</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Converged!</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; #######################</span></span>
-<span><span class="co">#&gt; ## Training finished ##</span></span>
-<span><span class="co">#&gt; #######################</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Saving model in C:\Users\hp\AppData\Local\Temp\RtmpM99ZUH/mofa_model.hdf5...</span></span>
 <span><span class="va">res_mofa</span><span class="op">$</span><span class="va">MOFA</span><span class="op">$</span><span class="va">plots</span><span class="op">$</span><span class="va">variance_by_factor</span></span></code></pre></div>
-<p><img src="methods_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="768"></p>
 </div>
 <div class="section level2">
 <h2 id="sgcca-sparse-generalised-cca">SGCCA: sparse generalised CCA<a class="anchor" aria-label="anchor" href="#sgcca-sparse-generalised-cca"></a>
@@ -501,7 +262,7 @@ between views, one component per view and dimension; factomics reports
 their average as the sample score. By default all features are kept;
 <code>sgcca_keep</code> gives the number of features to keep per view
 and component, for sparse, more interpretable loadings.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_sgcca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_factor_pipeline.html">run_factor_pipeline</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">data</span>, methods <span class="op">=</span> <span class="st">"SGCCA"</span>, k <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                 sgcca_keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">15</span>, <span class="fl">10</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="va">res_sgcca</span><span class="op">$</span><span class="va">SGCCA</span><span class="op">$</span><span class="va">loadings</span> <span class="op">!=</span> <span class="fl">0</span><span class="op">)</span></span>
@@ -516,7 +277,7 @@ all views (rank <code>k</code>), an <strong>individual</strong> part
 specific to the view (rank <code>jive_rank_individual</code>) and noise.
 factomics reports the factors of the joint part; the individual parts
 are kept in <code>meta$individual</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_jive</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_factor_pipeline.html">run_factor_pipeline</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">data</span>, methods <span class="op">=</span> <span class="st">"JIVE"</span>, k <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                jive_rank_individual <span class="op">=</span> <span class="fl">1</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -546,7 +307,7 @@ Feature names may be plain (<code>TP53</code>) or view-prefixed
 (<code>rna::TP53</code>); edges between different views are ignored, as
 in the paper. Here we build the graph that the simulation actually used,
 by connecting the features loaded on the same true factor:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">W</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="va">truth</span><span class="op">$</span><span class="va">W</span></span>
 <span><span class="va">pathways</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">W</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">W</span><span class="op">[[</span><span class="va">v</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">f</span><span class="op">)</span> <span class="op">{</span></span>
@@ -560,7 +321,7 @@ by connecting the features loaded on the same true factor:</p>
 <span><span class="co">#&gt; 1 transcriptome::gene_001 transcriptome::gene_002</span></span>
 <span><span class="co">#&gt; 2 transcriptome::gene_001 transcriptome::gene_015</span></span>
 <span><span class="co">#&gt; 3 transcriptome::gene_001 transcriptome::gene_035</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_rabfa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_factor_pipeline.html">run_factor_pipeline</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">data</span>, methods <span class="op">=</span> <span class="st">"RABFA"</span>, k <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>                                 rabfa_graph <span class="op">=</span> <span class="va">edges</span>,</span>
 <span>                                 rabfa_iter <span class="op">=</span> <span class="fl">1500</span>, rabfa_burnin <span class="op">=</span> <span class="fl">750</span>,</span>
@@ -572,16 +333,16 @@ by connecting the features loaded on the same true factor:</p>
 loadings whose 95% credible interval excludes zero, the posterior
 shrinkage parameters, a BIC-type criterion, and the log-likelihood trace
 for checking convergence:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="va">res_rabfa</span><span class="op">$</span><span class="va">RABFA</span><span class="op">$</span><span class="va">meta</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">selected</span><span class="op">)</span></span>
 <span><span class="co">#&gt; F1 F2 F3 F4 </span></span>
 <span><span class="co">#&gt; 66 62 62  0</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">loglik_trace</span>, type <span class="op">=</span> <span class="st">"l"</span>, xlab <span class="op">=</span> <span class="st">"Iteration"</span>, ylab <span class="op">=</span> <span class="st">"Log-likelihood"</span>,</span>
 <span>     main <span class="op">=</span> <span class="st">"RABFA trace (burn-in = first half)"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="methods_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="768"></p>
+<p><img src="methods_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="768"></p>
 <p>How well do the selected loadings match the true signal features?</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">truth</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="va">truth</span><span class="op">$</span><span class="va">feature_labels</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">selected</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span>selected <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="va">m</span><span class="op">$</span><span class="va">selected</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span>, true_signal <span class="op">=</span> <span class="va">truth</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         true_signal</span></span>
@@ -591,7 +352,7 @@ for checking convergence:</p>
 <p>Without pathway knowledge, <code><a href="../reference/build_feature_graph.html">build_feature_graph()</a></code> gives a
 data-driven graph (features in the same view with high correlation), and
 <code><a href="../reference/rabfa.html">rabfa()</a></code> is a shortcut:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span>   <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_feature_graph.html">build_feature_graph</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">data</span>, cutoff <span class="op">=</span> <span class="fl">0.5</span>, max_neighbors <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rabfa.html">rabfa</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">data</span>, k <span class="op">=</span> <span class="fl">4</span>, graph <span class="op">=</span> <span class="va">g</span>, iter <span class="op">=</span> <span class="fl">5000</span>, burnin <span class="op">=</span> <span class="fl">2500</span><span class="op">)</span></span></code></pre></div>
 <p>The main tuning parameters (<code><a href="../reference/rabfa_control.html">rabfa_control()</a></code>) are
@@ -609,25 +370,26 @@ burn-in.</p>
 <p>If a method fails (missing package, too few views, numerical problem)
 it is skipped with a warning and the others are still returned. Use
 <code>stop_on_error = TRUE</code> to make failures fatal instead.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_factor_pipeline.html">run_factor_pipeline</a></span><span class="op">(</span></span>
-<span>  <span class="va">sim</span><span class="op">$</span><span class="va">data</span>, methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PCA"</span>, <span class="st">"MFA"</span>, <span class="st">"FABIA"</span>, <span class="st">"GFA"</span>, <span class="st">"SGCCA"</span>, <span class="st">"JIVE"</span>,</span>
-<span>                       <span class="st">"RABFA"</span><span class="op">)</span>,</span>
+<span>  <span class="va">sim</span><span class="op">$</span><span class="va">data</span>, methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PCA"</span>, <span class="st">"MFA"</span>, <span class="st">"FABIA"</span>, <span class="st">"FABIA_ENS"</span>, <span class="st">"GFA"</span>, <span class="st">"SGCCA"</span>,</span>
+<span>                       <span class="st">"JIVE"</span>, <span class="st">"RABFA"</span><span class="op">)</span>,</span>
 <span>  k <span class="op">=</span> <span class="fl">4</span>, rabfa_graph <span class="op">=</span> <span class="va">edges</span>, rabfa_iter <span class="op">=</span> <span class="fl">1000</span>, rabfa_burnin <span class="op">=</span> <span class="fl">500</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">res_all</span></span>
 <span><span class="co">#&gt; &lt;factomics_results&gt;</span></span>
 <span><span class="co">#&gt;   60 samples, 3 view(s): transcriptome (200), metabolome (80), microbiome (50)</span></span>
-<span><span class="co">#&gt;   PCA    4 factors</span></span>
-<span><span class="co">#&gt;   MFA    4 factors</span></span>
-<span><span class="co">#&gt;   FABIA  4 factors</span></span>
-<span><span class="co">#&gt;   GFA    4 factors</span></span>
-<span><span class="co">#&gt;   SGCCA  4 factors</span></span>
-<span><span class="co">#&gt;   JIVE   4 factors</span></span>
-<span><span class="co">#&gt;   RABFA  4 factors</span></span></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt;   PCA       4 factors</span></span>
+<span><span class="co">#&gt;   MFA       4 factors</span></span>
+<span><span class="co">#&gt;   FABIA     4 factors</span></span>
+<span><span class="co">#&gt;   FABIA_ENS 3 factors</span></span>
+<span><span class="co">#&gt;   GFA       4 factors</span></span>
+<span><span class="co">#&gt;   SGCCA     4 factors</span></span>
+<span><span class="co">#&gt;   JIVE      4 factors</span></span>
+<span><span class="co">#&gt;   RABFA     4 factors</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_variance_explained.html">plot_variance_explained</a></span><span class="op">(</span><span class="va">res_all</span>, type <span class="op">=</span> <span class="st">"total"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="methods_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="768"></p>
+<p><img src="methods_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="" width="768"></p>
 </div>
 <div class="section level2">
 <h2 id="choosing-the-number-of-factors">Choosing the number of factors<a class="anchor" aria-label="anchor" href="#choosing-the-number-of-factors"></a>

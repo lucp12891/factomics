@@ -97,8 +97,8 @@ fx
 #> <factomics workflow>
 #> <factomics_results>
 #>   45 samples, 3 view(s): transcriptome (200), metabolome (80), microbiome (50)
-#>   PCA    3 factors
-#>   MFA    3 factors
+#>   PCA       3 factors
+#>   MFA       3 factors
 #>   Embeddings: PCA 
 #>   Clustering:
 #>             method algorithm k silhouette

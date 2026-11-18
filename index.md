@@ -35,6 +35,11 @@ Block-weighted PCA, Multiple Factor Analysis and JIVE. `PCA`, `MFA`,
 Sparse, view-aware factors with automatic relevance. `MOFA`, `GFA`,
 `FABIA`.
 
+### Robust biclusters
+
+Ensemble FABIA keeps the biclusters found again and again over many
+runs. `FABIA_ENS`.
+
 ### Graph-guided
 
 Pathway knowledge guides the loadings, robust to wrong edges. `RABFA`

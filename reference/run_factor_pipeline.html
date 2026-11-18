@@ -32,6 +32,7 @@ clustering, plots) works the same way whatever method produced the factors."><me
     <li><a class="dropdown-item" href="../articles/visualization.html">Embeddings and visualisation (PCA, UMAP, t-SNE)</a></li>
     <li><a class="dropdown-item" href="../articles/clustering.html">Clustering samples on factors</a></li>
     <li><a class="dropdown-item" href="../articles/benchmarking.html">Benchmarking factor methods</a></li>
+    <li><a class="dropdown-item" href="../articles/fabia-ensemble.html">FABIA versus ensemble FABIA</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Practical</h6></li>
     <li><a class="dropdown-item" href="../articles/own-data.html">Using your own data</a></li>
@@ -71,6 +72,7 @@ clustering, plots) works the same way whatever method produced the factors.</p>
 <span>  mfa_group_sizes <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  fabia_alpha <span class="op">=</span> <span class="fl">0.01</span>,</span>
 <span>  fabia_cyc <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>  fabia_ens_control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  mofa_outfile <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"mofa_model.hdf5"</span><span class="op">)</span>,</span>
 <span>  mofa_convergence <span class="op">=</span> <span class="st">"slow"</span>,</span>
 <span>  mofa_maxiter <span class="op">=</span> <span class="fl">2000</span>,</span>
@@ -104,7 +106,7 @@ list of such matrices.  All matrices must share the same sample names
 <dt id="arg-methods">methods<a class="anchor" aria-label="anchor" href="#arg-methods"></a></dt>
 <dd><p>Character vector of method names to run, case-insensitive.
 Any subset of
-<code>c("PCA", "MFA", "FABIA", "GFA", "MOFA", "SGCCA", "JIVE", "RABFA")</code>;
+<code>c("PCA", "MFA", "FABIA", "FABIA_ENS", "GFA", "MOFA", "SGCCA", "JIVE", "RABFA")</code>;
 see <code><a href="list_factor_methods.html">list_factor_methods()</a></code>. Defaults to <code>c("FABIA", "MOFA", "GFA", "MFA")</code>.</p></dd>
 
 
@@ -127,7 +129,14 @@ z-scored before fitting. Features with zero variance become 0.</p></dd>
 
 
 <dt id="arg-fabia-cyc">fabia_cyc<a class="anchor" aria-label="anchor" href="#arg-fabia-cyc"></a></dt>
-<dd><p>Integer.  Number of FABIA cycles (default <code>1000</code>).</p></dd>
+<dd><p>Integer.  Number of FABIA cycles (default <code>1000</code>). Also
+used by <code>"FABIA_ENS"</code>, together with <code>fabia_alpha</code>.</p></dd>
+
+
+<dt id="arg-fabia-ens-control">fabia_ens_control<a class="anchor" aria-label="anchor" href="#arg-fabia-ens-control"></a></dt>
+<dd><p>List of settings for ensemble FABIA
+(<code>"FABIA_ENS"</code>): number of runs, subsampling, similarity and reliability
+thresholds; see <code><a href="fabia_ensemble_control.html">fabia_ensemble_control()</a></code>.</p></dd>
 
 
 <dt id="arg-mofa-outfile">mofa_outfile<a class="anchor" aria-label="anchor" href="#arg-mofa-outfile"></a></dt>
@@ -237,8 +246,8 @@ Row names use <code>"view::feature"</code> notation.</p></dd>
 <span class="r-in"><span><span class="va">res</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;factomics_results&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   40 samples, 3 view(s): transcriptome (200), metabolome (80), microbiome (50)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   PCA    3 factors</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   MFA    3 factors</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   PCA       3 factors</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   MFA       3 factors</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">MFA</span><span class="op">$</span><span class="va">scores</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              F1         F2         F3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S001 -1.6155192  0.7839443  0.4786979</span>
