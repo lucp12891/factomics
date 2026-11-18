@@ -2,7 +2,7 @@
 
 ![factomics logo](logo.png)
 
-One toolbox for multi-omics factor analysis in R. Seven factor methods
+One toolbox for multi-omics factor analysis in R. Eight factor methods
 behind one function, one result format, and the whole downstream
 workflow: embeddings, clustering, benchmarking and interpretation. Also
 available as a ready-to-run Docker image.
@@ -34,6 +34,11 @@ Block-weighted PCA, Multiple Factor Analysis and JIVE. `PCA`, `MFA`,
 
 Sparse, view-aware factors with automatic relevance. `MOFA`, `GFA`,
 `FABIA`.
+
+### Graph-guided
+
+Pathway knowledge guides the loadings, robust to wrong edges. `RABFA`
+(Zhang et al. 2024).
 
 ### Correlation-based
 
@@ -150,6 +155,12 @@ docker run --rm -v "$PWD":/work ghcr.io/lucp12891/factomics:latest \
   : Run multi-omics factor analysis pipeline
 - [`list_factor_methods()`](https://lucp12891.github.io/factomics/reference/list_factor_methods.md)
   : List the factor-analysis methods supported by factomics
+- [`rabfa()`](https://lucp12891.github.io/factomics/reference/rabfa.md)
+  : Robust and adaptive-shrinkage Bayesian factor analysis (RABFA)
+- [`rabfa_control()`](https://lucp12891.github.io/factomics/reference/rabfa_control.md)
+  : Default control settings for RABFA
+- [`build_feature_graph()`](https://lucp12891.github.io/factomics/reference/build_feature_graph.md)
+  : Build a feature graph for RABFA from the data
 - [`simulate_multiomics()`](https://lucp12891.github.io/factomics/reference/simulate_multiomics.md)
   : Simulate a multi-omics data set with known latent factors
 

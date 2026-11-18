@@ -16,6 +16,7 @@
 <url><loc>https://lucp12891.github.io/factomics/reference/adjusted_rand_index.html</loc></url>
 <url><loc>https://lucp12891.github.io/factomics/reference/attach_scores_metadata.html</loc></url>
 <url><loc>https://lucp12891.github.io/factomics/reference/benchmark_factor_methods.html</loc></url>
+<url><loc>https://lucp12891.github.io/factomics/reference/build_feature_graph.html</loc></url>
 <url><loc>https://lucp12891.github.io/factomics/reference/build_loading_comparison.html</loc></url>
 <url><loc>https://lucp12891.github.io/factomics/reference/cluster_results.html</loc></url>
 <url><loc>https://lucp12891.github.io/factomics/reference/cluster_samples.html</loc></url>
@@ -38,6 +39,8 @@
 <url><loc>https://lucp12891.github.io/factomics/reference/plot_scores_scatter_grid.html</loc></url>
 <url><loc>https://lucp12891.github.io/factomics/reference/plot_top_loadings.html</loc></url>
 <url><loc>https://lucp12891.github.io/factomics/reference/plot_variance_explained.html</loc></url>
+<url><loc>https://lucp12891.github.io/factomics/reference/rabfa.html</loc></url>
+<url><loc>https://lucp12891.github.io/factomics/reference/rabfa_control.html</loc></url>
 <url><loc>https://lucp12891.github.io/factomics/reference/run_factor_pipeline.html</loc></url>
 <url><loc>https://lucp12891.github.io/factomics/reference/scores_df_for_method.html</loc></url>
 <url><loc>https://lucp12891.github.io/factomics/reference/simulate_multiomics.html</loc></url>

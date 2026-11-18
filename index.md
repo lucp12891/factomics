@@ -2,7 +2,7 @@
 
 ![factomics logo](logo.png)
 
-One toolbox for multi-omics factor analysis in R. Seven factor methods
+One toolbox for multi-omics factor analysis in R. Eight factor methods
 behind one function, one result format, and the whole downstream
 workflow: embeddings, clustering, benchmarking and interpretation. Also
 available as a ready-to-run Docker image.
@@ -34,6 +34,11 @@ Block-weighted PCA, Multiple Factor Analysis and JIVE. `PCA`, `MFA`,
 
 Sparse, view-aware factors with automatic relevance. `MOFA`, `GFA`,
 `FABIA`.
+
+### Graph-guided
+
+Pathway knowledge guides the loadings, robust to wrong edges. `RABFA`
+(Zhang et al. 2024).
 
 ### Correlation-based
 

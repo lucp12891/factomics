@@ -13,6 +13,12 @@
   : Run multi-omics factor analysis pipeline
 - [`list_factor_methods()`](https://lucp12891.github.io/factomics/reference/list_factor_methods.md)
   : List the factor-analysis methods supported by factomics
+- [`rabfa()`](https://lucp12891.github.io/factomics/reference/rabfa.md)
+  : Robust and adaptive-shrinkage Bayesian factor analysis (RABFA)
+- [`rabfa_control()`](https://lucp12891.github.io/factomics/reference/rabfa_control.md)
+  : Default control settings for RABFA
+- [`build_feature_graph()`](https://lucp12891.github.io/factomics/reference/build_feature_graph.md)
+  : Build a feature graph for RABFA from the data
 - [`simulate_multiomics()`](https://lucp12891.github.io/factomics/reference/simulate_multiomics.md)
   : Simulate a multi-omics data set with known latent factors
 

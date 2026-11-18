@@ -27,6 +27,10 @@ run_factor_pipeline(
   pca_block_weight = TRUE,
   sgcca_keep = NULL,
   jive_rank_individual = 1,
+  rabfa_graph = NULL,
+  rabfa_iter = 2000,
+  rabfa_burnin = 1000,
+  rabfa_control = list(),
   seed = 21,
   verbose = TRUE,
   stop_on_error = FALSE
@@ -44,7 +48,9 @@ run_factor_pipeline(
 - methods:
 
   Character vector of method names to run, case-insensitive. Any subset
-  of `c("PCA", "MFA", "FABIA", "GFA", "MOFA", "SGCCA", "JIVE")`; see
+  of
+  `c("PCA", "MFA", "FABIA", "GFA", "MOFA", "SGCCA", "JIVE", "RABFA")`;
+  see
   [`list_factor_methods()`](https://lucp12891.github.io/factomics/reference/list_factor_methods.md).
   Defaults to `c("FABIA", "MOFA", "GFA", "MFA")`.
 
@@ -122,6 +128,25 @@ run_factor_pipeline(
 
   Integer. Rank of each view's individual structure for JIVE (default
   `1`).
+
+- rabfa_graph:
+
+  Optional feature graph for RABFA (edge data frame, adjacency matrix,
+  or per-view list); see
+  [`rabfa()`](https://lucp12891.github.io/factomics/reference/rabfa.md)
+  and
+  [`build_feature_graph()`](https://lucp12891.github.io/factomics/reference/build_feature_graph.md).
+  `NULL` (default) fits RABFA without a graph.
+
+- rabfa_iter, rabfa_burnin:
+
+  Total MCMC iterations and burn-in for RABFA (defaults `2000` and
+  `1000`).
+
+- rabfa_control:
+
+  List of RABFA hyperparameters; see
+  [`rabfa_control()`](https://lucp12891.github.io/factomics/reference/rabfa_control.md).
 
 - seed:
 
