@@ -19,7 +19,8 @@ sim <- simulate_multiomics(n_samples = 60, seed = 1)
 
 All methods are called the same way, through `run_factor_pipeline(X, methods, k)`.
 Method-specific settings are ordinary arguments with a method prefix
-(`fabia_*`, `mofa_*`, `gfa_*`, `pca_*`, `sgcca_*`, `jive_*`).
+(`fabia_*`, `fabia_ens_*`, `mofa_*`, `gfa_*`, `pca_*`, `sgcca_*`, `jive_*`,
+`rabfa_*`).
 
 ```{r}
 knitr::kable(list_factor_methods()[, c("method", "package", "family",
@@ -62,6 +63,18 @@ sparseness (larger = sparser), `fabia_cyc` the number of iterations.
 res_fabia <- run_factor_pipeline(sim$data, methods = "FABIA", k = 4,
                                  fabia_alpha = 0.05, fabia_cyc = 500,
                                  verbose = FALSE)
+```
+
+Because FABIA starts from random values, its biclusters can change from run
+to run. **Ensemble FABIA** (`"FABIA_ENS"`) runs it many times and keeps only
+the biclusters found in most runs; see
+[FABIA versus ensemble FABIA](fabia-ensemble.html).
+
+```{r}
+res_ens <- run_factor_pipeline(sim$data, methods = "FABIA_ENS", k = 4,
+                               fabia_ens_control = list(runs = 20),
+                               verbose = FALSE)
+res_ens$FABIA_ENS$meta$reliability
 ```
 
 ## GFA: Group Factor Analysis
@@ -200,8 +213,8 @@ skipped with a warning and the others are still returned. Use
 
 ```{r}
 res_all <- run_factor_pipeline(
-  sim$data, methods = c("PCA", "MFA", "FABIA", "GFA", "SGCCA", "JIVE",
-                       "RABFA"),
+  sim$data, methods = c("PCA", "MFA", "FABIA", "FABIA_ENS", "GFA", "SGCCA",
+                       "JIVE", "RABFA"),
   k = 4, rabfa_graph = edges, rabfa_iter = 1000, rabfa_burnin = 500,
   verbose = FALSE)
 res_all

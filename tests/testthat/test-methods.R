@@ -11,8 +11,8 @@
 test_that("list_factor_methods describes every method", {
   lm <- list_factor_methods()
   expect_setequal(lm$method,
-                  c("PCA", "MFA", "FABIA", "GFA", "MOFA", "SGCCA", "JIVE",
-                    "RABFA"))
+                  c("PCA", "MFA", "FABIA", "FABIA_ENS", "GFA", "MOFA",
+                    "SGCCA", "JIVE", "RABFA"))
   expect_type(lm$installed, "logical")
 })
 

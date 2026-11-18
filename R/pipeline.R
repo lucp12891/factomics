@@ -5,18 +5,20 @@
 # Registry of supported methods ------------------------------------------------
 .method_registry <- function() {
   data.frame(
-    method      = c("PCA", "MFA", "FABIA", "GFA", "MOFA", "SGCCA", "JIVE",
-                    "RABFA"),
-    package     = c("stats", "FactoMineR", "fabia", "GFA", "MOFA2",
+    method      = c("PCA", "MFA", "FABIA", "FABIA_ENS", "GFA", "MOFA",
+                    "SGCCA", "JIVE", "RABFA"),
+    package     = c("stats", "FactoMineR", "fabia", "fabia", "GFA", "MOFA2",
                     "mixOmics", "r.jive", "factomics"),
     family      = c("Matrix factorisation", "Matrix factorisation",
-                    "Bayesian / biclustering", "Bayesian",
+                    "Bayesian / biclustering", "Ensemble / biclustering",
+                    "Bayesian",
                     "Bayesian", "Correlation-based", "Matrix factorisation",
                     "Bayesian / graph-guided"),
     description = c(
       "Block-weighted PCA on concatenated views",
       "Multiple Factor Analysis (Escofier & Pages)",
       "Factor Analysis for Bicluster Acquisition",
+      "Ensemble FABIA: robust biclusters over many runs (Kasim 2016, Ch. 10)",
       "Group Factor Analysis (Bayesian, view-specific sparsity)",
       "Multi-Omics Factor Analysis v2 (needs Python mofapy2)",
       "Sparse Generalised Canonical Correlation Analysis",
@@ -55,7 +57,8 @@ list_factor_methods <- function() {
 #'   (column names).
 #' @param methods Character vector of method names to run, case-insensitive.
 #'   Any subset of
-#'   `c("PCA", "MFA", "FABIA", "GFA", "MOFA", "SGCCA", "JIVE", "RABFA")`;
+#'   `c("PCA", "MFA", "FABIA", "FABIA_ENS", "GFA", "MOFA", "SGCCA", "JIVE",
+#'   "RABFA")`;
 #'   see [list_factor_methods()]. Defaults to `c("FABIA", "MOFA", "GFA", "MFA")`.
 #' @param k Integer.  Target number of latent factors (default `10`).
 #' @param scale_features Logical.  If `TRUE` (default), each feature is
@@ -63,7 +66,11 @@ list_factor_methods <- function() {
 #' @param mfa_group_sizes Integer vector.  Column group sizes passed to
 #'   [FactoMineR::MFA()].  If `NULL` (default), derived from view sizes.
 #' @param fabia_alpha Numeric.  Sparseness parameter for FABIA (default `0.01`).
-#' @param fabia_cyc Integer.  Number of FABIA cycles (default `1000`).
+#' @param fabia_cyc Integer.  Number of FABIA cycles (default `1000`). Also
+#'   used by `"FABIA_ENS"`, together with `fabia_alpha`.
+#' @param fabia_ens_control List of settings for ensemble FABIA
+#'   (`"FABIA_ENS"`): number of runs, subsampling, similarity and reliability
+#'   thresholds; see [fabia_ensemble_control()].
 #' @param mofa_outfile Character.  Path for the MOFA2 HDF5 output file.
 #'   Defaults to a file in [tempdir()].
 #' @param mofa_convergence Character. Convergence mode for MOFA2: `"fast"`,
@@ -123,6 +130,7 @@ run_factor_pipeline <- function(
     mfa_group_sizes      = NULL,
     fabia_alpha          = 0.01,
     fabia_cyc            = 1000,
+    fabia_ens_control    = list(),
     mofa_outfile         = file.path(tempdir(), "mofa_model.hdf5"),
     mofa_convergence     = "slow",
     mofa_maxiter         = 2000,
@@ -154,6 +162,8 @@ run_factor_pipeline <- function(
 
   fitters <- list(
     FABIA = function() .fit_fabia(V, k, fabia_alpha, fabia_cyc, seed, verbose),
+    FABIA_ENS = function() .fit_fabia_ens(V, k, fabia_alpha, fabia_cyc,
+                                          fabia_ens_control, seed, verbose),
     MOFA  = function() .fit_mofa(V, k, sample_names, mofa_outfile,
                                  mofa_convergence, mofa_maxiter,
                                  mofa_use_basilisk, mofa_python, seed),
@@ -201,7 +211,7 @@ print.factomics_results <- function(x, ...) {
   for (m in names(x)) {
     sc <- x[[m]]$scores
     k  <- if (is.matrix(sc)) ncol(sc) else NA
-    cat(sprintf("  %-6s %s factors\n", m, k))
+    cat(sprintf("  %-9s %s factors\n", m, k))
   }
   invisible(x)
 }

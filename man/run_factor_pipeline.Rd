@@ -12,6 +12,7 @@ run_factor_pipeline(
   mfa_group_sizes = NULL,
   fabia_alpha = 0.01,
   fabia_cyc = 1000,
+  fabia_ens_control = list(),
   mofa_outfile = file.path(tempdir(), "mofa_model.hdf5"),
   mofa_convergence = "slow",
   mofa_maxiter = 2000,
@@ -38,7 +39,7 @@ list of such matrices.  All matrices must share the same sample names
 
 \item{methods}{Character vector of method names to run, case-insensitive.
 Any subset of
-\code{c("PCA", "MFA", "FABIA", "GFA", "MOFA", "SGCCA", "JIVE", "RABFA")};
+\code{c("PCA", "MFA", "FABIA", "FABIA_ENS", "GFA", "MOFA", "SGCCA", "JIVE", "RABFA")};
 see \code{\link[=list_factor_methods]{list_factor_methods()}}. Defaults to \code{c("FABIA", "MOFA", "GFA", "MFA")}.}
 
 \item{k}{Integer.  Target number of latent factors (default \code{10}).}
@@ -51,7 +52,12 @@ z-scored before fitting. Features with zero variance become 0.}
 
 \item{fabia_alpha}{Numeric.  Sparseness parameter for FABIA (default \code{0.01}).}
 
-\item{fabia_cyc}{Integer.  Number of FABIA cycles (default \code{1000}).}
+\item{fabia_cyc}{Integer.  Number of FABIA cycles (default \code{1000}). Also
+used by \code{"FABIA_ENS"}, together with \code{fabia_alpha}.}
+
+\item{fabia_ens_control}{List of settings for ensemble FABIA
+(\code{"FABIA_ENS"}): number of runs, subsampling, similarity and reliability
+thresholds; see \code{\link[=fabia_ensemble_control]{fabia_ensemble_control()}}.}
 
 \item{mofa_outfile}{Character.  Path for the MOFA2 HDF5 output file.
 Defaults to a file in \code{\link[=tempdir]{tempdir()}}.}

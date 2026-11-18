@@ -40,6 +40,8 @@ navbar:
         href: articles/clustering.html
       - text: Benchmarking factor methods
         href: articles/benchmarking.html
+      - text: FABIA versus ensemble FABIA
+        href: articles/fabia-ensemble.html
       - text: -------
       - text: "Practical"
       - text: Using your own data
@@ -62,6 +64,7 @@ articles:
   - articles/visualization
   - articles/clustering
   - articles/benchmarking
+  - articles/fabia-ensemble
 - title: Practical
   contents:
   - articles/own-data
@@ -76,6 +79,9 @@ reference:
   contents:
   - run_factor_pipeline
   - list_factor_methods
+  - fabia_ensemble
+  - fabia_ensemble_control
+  - plot_fabia_ensemble
   - rabfa
   - rabfa_control
   - build_feature_graph
@@ -107,6 +113,8 @@ reference:
   - build_loading_comparison
   - plot_scores_scatter_grid
   - plot_scores_lollipop_grid
+  - factor_stability
+  - plot_factor_stability
 - title: Metadata and helpers
   contents:
   - attach_scores_metadata

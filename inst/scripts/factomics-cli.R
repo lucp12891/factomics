@@ -24,7 +24,8 @@ Options:
   --metadata FILE       Sample metadata CSV (optional).
   --sample-col NAME     Sample-ID column in metadata (default: sample).
   --methods LIST        Comma-separated methods (default: PCA,MFA,FABIA,GFA).
-                        Available: PCA,MFA,FABIA,GFA,MOFA,SGCCA,JIVE,RABFA
+                        Available: PCA,MFA,FABIA,FABIA_ENS,GFA,MOFA,SGCCA,
+                        JIVE,RABFA
   --graph FILE          Feature graph for RABFA: CSV with columns from,to.
   --k N                 Number of factors (default: 5).
   --embeddings LIST     Comma-separated: umap,tsne,pca (default: umap,tsne).
