@@ -61,6 +61,7 @@ list_factor_methods()[, c("method", "package", "installed")]
 #> 5   MOFA      MOFA2      TRUE
 #> 6  SGCCA   mixOmics      TRUE
 #> 7   JIVE     r.jive      TRUE
+#> 8  RABFA  factomics      TRUE
 ```
 
 ``` r

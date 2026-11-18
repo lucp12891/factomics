@@ -1,6 +1,10 @@
 # Changelog
 
-## factomics 0.2.0
+## factomics 0.1.0
+
+First public release.
+
+### Graph-guided factor analysis
 
 - New method **RABFA**: the graph-guided Bayesian factor analysis with
   robust and adaptive shrinkage priors of Zhang, Chang, Shen and Long
@@ -19,10 +23,6 @@
   data).
 - `factomics-cli` gains `--graph FILE` (edge CSV with `from`, `to`) for
   RABFA.
-
-## factomics 0.1.0
-
-First public release.
 
 ### New methods
 

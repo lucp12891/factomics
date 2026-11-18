@@ -142,212 +142,212 @@ res_mofa <- run_factor_pipeline(sim$data, methods = "MOFA", k = 4,
 #> 
 #> ELBO before training: -85258.96 
 #> 
-#> Iteration 1: time=0.02, ELBO=-28288.49, deltaELBO=56970.475 (66.82051012%), Factors=4
+#> Iteration 1: time=0.01, ELBO=-28288.49, deltaELBO=56970.475 (66.82051012%), Factors=4
 #> Iteration 2: time=0.00, Factors=4
-#> Iteration 3: time=0.02, Factors=4
-#> Iteration 4: time=0.01, Factors=4
-#> Iteration 5: time=0.01, Factors=4
-#> Iteration 6: time=0.02, ELBO=-24688.46, deltaELBO=3600.025 (4.22245920%), Factors=4
+#> Iteration 3: time=0.00, Factors=4
+#> Iteration 4: time=0.00, Factors=4
+#> Iteration 5: time=0.00, Factors=4
+#> Iteration 6: time=0.00, ELBO=-24688.46, deltaELBO=3600.025 (4.22245920%), Factors=4
 #> Iteration 7: time=0.00, Factors=4
-#> Iteration 8: time=0.02, Factors=4
-#> Iteration 9: time=0.01, Factors=4
+#> Iteration 8: time=0.00, Factors=4
+#> Iteration 9: time=0.00, Factors=4
 #> Iteration 10: time=0.00, Factors=4
-#> Iteration 11: time=0.02, ELBO=-24669.17, deltaELBO=19.295 (0.02263060%), Factors=4
-#> Iteration 12: time=0.02, Factors=4
-#> Iteration 13: time=0.01, Factors=4
-#> Iteration 14: time=0.01, Factors=4
-#> Iteration 15: time=0.02, Factors=4
-#> Iteration 16: time=0.02, ELBO=-24656.99, deltaELBO=12.182 (0.01428835%), Factors=4
+#> Iteration 11: time=0.00, ELBO=-24669.17, deltaELBO=19.295 (0.02263060%), Factors=4
+#> Iteration 12: time=0.00, Factors=4
+#> Iteration 13: time=0.00, Factors=4
+#> Iteration 14: time=0.00, Factors=4
+#> Iteration 15: time=0.00, Factors=4
+#> Iteration 16: time=0.00, ELBO=-24656.99, deltaELBO=12.182 (0.01428835%), Factors=4
 #> Iteration 17: time=0.00, Factors=4
-#> Iteration 18: time=0.02, Factors=4
-#> Iteration 19: time=0.02, Factors=4
+#> Iteration 18: time=0.00, Factors=4
+#> Iteration 19: time=0.00, Factors=4
 #> Iteration 20: time=0.00, Factors=4
-#> Iteration 21: time=0.02, ELBO=-24649.11, deltaELBO=7.881 (0.00924327%), Factors=4
-#> Iteration 22: time=0.02, Factors=4
+#> Iteration 21: time=0.00, ELBO=-24649.11, deltaELBO=7.881 (0.00924327%), Factors=4
+#> Iteration 22: time=0.00, Factors=4
 #> Iteration 23: time=0.00, Factors=4
-#> Iteration 24: time=0.02, Factors=4
+#> Iteration 24: time=0.00, Factors=4
 #> Iteration 25: time=0.00, Factors=4
-#> Iteration 26: time=0.02, ELBO=-24643.68, deltaELBO=5.426 (0.00636403%), Factors=4
-#> Iteration 27: time=0.02, Factors=4
-#> Iteration 28: time=0.02, Factors=4
-#> Iteration 29: time=0.01, Factors=4
-#> Iteration 30: time=0.01, Factors=4
-#> Iteration 31: time=0.01, ELBO=-24639.59, deltaELBO=4.096 (0.00480409%), Factors=4
-#> Iteration 32: time=0.01, Factors=4
-#> Iteration 33: time=0.01, Factors=4
-#> Iteration 34: time=0.01, Factors=4
+#> Iteration 26: time=0.00, ELBO=-24643.68, deltaELBO=5.426 (0.00636403%), Factors=4
+#> Iteration 27: time=0.00, Factors=4
+#> Iteration 28: time=0.00, Factors=4
+#> Iteration 29: time=0.00, Factors=4
+#> Iteration 30: time=0.00, Factors=4
+#> Iteration 31: time=0.00, ELBO=-24639.59, deltaELBO=4.096 (0.00480409%), Factors=4
+#> Iteration 32: time=0.00, Factors=4
+#> Iteration 33: time=0.00, Factors=4
+#> Iteration 34: time=0.00, Factors=4
 #> Iteration 35: time=0.00, Factors=4
-#> Iteration 36: time=0.01, ELBO=-24636.18, deltaELBO=3.406 (0.00399537%), Factors=4
-#> Iteration 37: time=0.02, Factors=4
+#> Iteration 36: time=0.00, ELBO=-24636.18, deltaELBO=3.406 (0.00399537%), Factors=4
+#> Iteration 37: time=0.00, Factors=4
 #> Iteration 38: time=0.00, Factors=4
 #> Iteration 39: time=0.00, Factors=4
-#> Iteration 40: time=0.02, Factors=4
-#> Iteration 41: time=0.02, ELBO=-24633.17, deltaELBO=3.010 (0.00353094%), Factors=4
+#> Iteration 40: time=0.00, Factors=4
+#> Iteration 41: time=0.00, ELBO=-24633.17, deltaELBO=3.010 (0.00353094%), Factors=4
 #> Iteration 42: time=0.00, Factors=4
-#> Iteration 43: time=0.01, Factors=4
-#> Iteration 44: time=0.02, Factors=4
+#> Iteration 43: time=0.00, Factors=4
+#> Iteration 44: time=0.00, Factors=4
 #> Iteration 45: time=0.00, Factors=4
-#> Iteration 46: time=0.02, ELBO=-24630.46, deltaELBO=2.709 (0.00317771%), Factors=4
-#> Iteration 47: time=0.02, Factors=4
+#> Iteration 46: time=0.00, ELBO=-24630.46, deltaELBO=2.709 (0.00317771%), Factors=4
+#> Iteration 47: time=0.00, Factors=4
 #> Iteration 48: time=0.00, Factors=4
-#> Iteration 49: time=0.02, Factors=4
-#> Iteration 50: time=0.01, Factors=4
-#> Iteration 51: time=0.01, ELBO=-24628.07, deltaELBO=2.392 (0.00280561%), Factors=4
-#> Iteration 52: time=0.01, Factors=4
-#> Iteration 53: time=0.01, Factors=4
-#> Iteration 54: time=0.01, Factors=4
-#> Iteration 55: time=0.01, Factors=4
-#> Iteration 56: time=0.01, ELBO=-24625.99, deltaELBO=2.076 (0.00243516%), Factors=4
-#> Iteration 57: time=0.01, Factors=4
+#> Iteration 49: time=0.00, Factors=4
+#> Iteration 50: time=0.00, Factors=4
+#> Iteration 51: time=0.00, ELBO=-24628.07, deltaELBO=2.392 (0.00280561%), Factors=4
+#> Iteration 52: time=0.00, Factors=4
+#> Iteration 53: time=0.00, Factors=4
+#> Iteration 54: time=0.00, Factors=4
+#> Iteration 55: time=0.00, Factors=4
+#> Iteration 56: time=0.00, ELBO=-24625.99, deltaELBO=2.076 (0.00243516%), Factors=4
+#> Iteration 57: time=0.00, Factors=4
 #> Iteration 58: time=0.00, Factors=4
 #> Iteration 59: time=0.00, Factors=4
-#> Iteration 60: time=0.01, Factors=4
-#> Iteration 61: time=0.01, ELBO=-24624.19, deltaELBO=1.806 (0.00211795%), Factors=4
-#> Iteration 62: time=0.02, Factors=4
+#> Iteration 60: time=0.00, Factors=4
+#> Iteration 61: time=0.00, ELBO=-24624.19, deltaELBO=1.806 (0.00211795%), Factors=4
+#> Iteration 62: time=0.00, Factors=4
 #> Iteration 63: time=0.00, Factors=4
-#> Iteration 64: time=0.02, Factors=4
-#> Iteration 65: time=0.02, Factors=4
+#> Iteration 64: time=0.00, Factors=4
+#> Iteration 65: time=0.00, Factors=4
 #> Iteration 66: time=0.00, ELBO=-24622.59, deltaELBO=1.591 (0.00186627%), Factors=4
 #> Iteration 67: time=0.00, Factors=4
-#> Iteration 68: time=0.02, Factors=4
-#> Iteration 69: time=0.01, Factors=4
-#> Iteration 70: time=0.01, Factors=4
-#> Iteration 71: time=0.02, ELBO=-24621.18, deltaELBO=1.418 (0.00166344%), Factors=4
+#> Iteration 68: time=0.00, Factors=4
+#> Iteration 69: time=0.00, Factors=4
+#> Iteration 70: time=0.00, Factors=4
+#> Iteration 71: time=0.00, ELBO=-24621.18, deltaELBO=1.418 (0.00166344%), Factors=4
 #> Iteration 72: time=0.00, Factors=4
-#> Iteration 73: time=0.02, Factors=4
+#> Iteration 73: time=0.00, Factors=4
 #> Iteration 74: time=0.00, Factors=4
-#> Iteration 75: time=0.02, Factors=4
-#> Iteration 76: time=0.02, ELBO=-24619.89, deltaELBO=1.283 (0.00150535%), Factors=4
+#> Iteration 75: time=0.00, Factors=4
+#> Iteration 76: time=0.00, ELBO=-24619.89, deltaELBO=1.283 (0.00150535%), Factors=4
 #> Iteration 77: time=0.00, Factors=4
-#> Iteration 78: time=0.02, Factors=4
+#> Iteration 78: time=0.00, Factors=4
 #> Iteration 79: time=0.00, Factors=4
 #> Iteration 80: time=0.00, Factors=4
-#> Iteration 81: time=0.02, ELBO=-24618.73, deltaELBO=1.163 (0.00136439%), Factors=4
+#> Iteration 81: time=0.00, ELBO=-24618.73, deltaELBO=1.163 (0.00136439%), Factors=4
 #> Iteration 82: time=0.00, Factors=4
-#> Iteration 83: time=0.02, Factors=4
+#> Iteration 83: time=0.00, Factors=4
 #> Iteration 84: time=0.00, Factors=4
 #> Iteration 85: time=0.00, Factors=4
-#> Iteration 86: time=0.01, ELBO=-24617.66, deltaELBO=1.067 (0.00125196%), Factors=4
-#> Iteration 87: time=0.02, Factors=4
+#> Iteration 86: time=0.00, ELBO=-24617.66, deltaELBO=1.067 (0.00125196%), Factors=4
+#> Iteration 87: time=0.00, Factors=4
 #> Iteration 88: time=0.00, Factors=4
-#> Iteration 89: time=0.02, Factors=4
-#> Iteration 90: time=0.01, Factors=4
-#> Iteration 91: time=0.01, ELBO=-24616.68, deltaELBO=0.979 (0.00114793%), Factors=4
-#> Iteration 92: time=0.01, Factors=4
-#> Iteration 93: time=0.01, Factors=4
-#> Iteration 94: time=0.01, Factors=4
+#> Iteration 89: time=0.00, Factors=4
+#> Iteration 90: time=0.00, Factors=4
+#> Iteration 91: time=0.00, ELBO=-24616.68, deltaELBO=0.979 (0.00114793%), Factors=4
+#> Iteration 92: time=0.00, Factors=4
+#> Iteration 93: time=0.00, Factors=4
+#> Iteration 94: time=0.00, Factors=4
 #> Iteration 95: time=0.00, Factors=4
-#> Iteration 96: time=0.02, ELBO=-24615.78, deltaELBO=0.905 (0.00106163%), Factors=4
+#> Iteration 96: time=0.00, ELBO=-24615.78, deltaELBO=0.905 (0.00106163%), Factors=4
 #> Iteration 97: time=0.00, Factors=4
-#> Iteration 98: time=0.02, Factors=4
-#> Iteration 99: time=0.01, Factors=4
+#> Iteration 98: time=0.00, Factors=4
+#> Iteration 99: time=0.00, Factors=4
 #> Iteration 100: time=0.00, Factors=4
-#> Iteration 101: time=0.02, ELBO=-24614.94, deltaELBO=0.837 (0.00098202%), Factors=4
-#> Iteration 102: time=0.01, Factors=4
+#> Iteration 101: time=0.00, ELBO=-24614.94, deltaELBO=0.837 (0.00098202%), Factors=4
+#> Iteration 102: time=0.00, Factors=4
 #> Iteration 103: time=0.00, Factors=4
-#> Iteration 104: time=0.02, Factors=4
-#> Iteration 105: time=0.01, Factors=4
-#> Iteration 106: time=0.01, ELBO=-24614.16, deltaELBO=0.782 (0.00091721%), Factors=4
-#> Iteration 107: time=0.02, Factors=4
+#> Iteration 104: time=0.00, Factors=4
+#> Iteration 105: time=0.00, Factors=4
+#> Iteration 106: time=0.00, ELBO=-24614.16, deltaELBO=0.782 (0.00091721%), Factors=4
+#> Iteration 107: time=0.00, Factors=4
 #> Iteration 108: time=0.00, Factors=4
-#> Iteration 109: time=0.01, Factors=4
-#> Iteration 110: time=0.01, Factors=4
-#> Iteration 111: time=0.01, ELBO=-24613.43, deltaELBO=0.729 (0.00085527%), Factors=4
+#> Iteration 109: time=0.00, Factors=4
+#> Iteration 110: time=0.00, Factors=4
+#> Iteration 111: time=0.00, ELBO=-24613.43, deltaELBO=0.729 (0.00085527%), Factors=4
 #> Iteration 112: time=0.00, Factors=4
-#> Iteration 113: time=0.01, Factors=4
+#> Iteration 113: time=0.00, Factors=4
 #> Iteration 114: time=0.00, Factors=4
-#> Iteration 115: time=0.02, Factors=4
-#> Iteration 116: time=0.02, ELBO=-24612.75, deltaELBO=0.681 (0.00079877%), Factors=4
+#> Iteration 115: time=0.00, Factors=4
+#> Iteration 116: time=0.00, ELBO=-24612.75, deltaELBO=0.681 (0.00079877%), Factors=4
 #> Iteration 117: time=0.00, Factors=4
-#> Iteration 118: time=0.02, Factors=4
+#> Iteration 118: time=0.00, Factors=4
 #> Iteration 119: time=0.00, Factors=4
-#> Iteration 120: time=0.01, Factors=4
-#> Iteration 121: time=0.01, ELBO=-24612.10, deltaELBO=0.646 (0.00075741%), Factors=4
+#> Iteration 120: time=0.00, Factors=4
+#> Iteration 121: time=0.00, ELBO=-24612.10, deltaELBO=0.646 (0.00075741%), Factors=4
 #> Iteration 122: time=0.00, Factors=4
 #> Iteration 123: time=0.00, Factors=4
 #> Iteration 124: time=0.00, Factors=4
 #> Iteration 125: time=0.00, Factors=4
-#> Iteration 126: time=0.02, ELBO=-24611.49, deltaELBO=0.613 (0.00071873%), Factors=4
+#> Iteration 126: time=0.00, ELBO=-24611.49, deltaELBO=0.613 (0.00071873%), Factors=4
 #> Iteration 127: time=0.00, Factors=4
-#> Iteration 128: time=0.02, Factors=4
-#> Iteration 129: time=0.01, Factors=4
-#> Iteration 130: time=0.01, Factors=4
-#> Iteration 131: time=0.02, ELBO=-24610.90, deltaELBO=0.589 (0.00069124%), Factors=4
+#> Iteration 128: time=0.00, Factors=4
+#> Iteration 129: time=0.00, Factors=4
+#> Iteration 130: time=0.00, Factors=4
+#> Iteration 131: time=0.00, ELBO=-24610.90, deltaELBO=0.589 (0.00069124%), Factors=4
 #> Iteration 132: time=0.00, Factors=4
-#> Iteration 133: time=0.02, Factors=4
-#> Iteration 134: time=0.02, Factors=4
+#> Iteration 133: time=0.00, Factors=4
+#> Iteration 134: time=0.00, Factors=4
 #> Iteration 135: time=0.00, Factors=4
-#> Iteration 136: time=0.02, ELBO=-24610.32, deltaELBO=0.576 (0.00067585%), Factors=4
+#> Iteration 136: time=0.00, ELBO=-24610.32, deltaELBO=0.576 (0.00067585%), Factors=4
 #> Iteration 137: time=0.00, Factors=4
-#> Iteration 138: time=0.02, Factors=4
+#> Iteration 138: time=0.00, Factors=4
 #> Iteration 139: time=0.00, Factors=4
-#> Iteration 140: time=0.02, Factors=4
-#> Iteration 141: time=0.02, ELBO=-24609.73, deltaELBO=0.591 (0.00069267%), Factors=4
-#> Iteration 142: time=0.01, Factors=4
-#> Iteration 143: time=0.01, Factors=4
+#> Iteration 140: time=0.00, Factors=4
+#> Iteration 141: time=0.00, ELBO=-24609.73, deltaELBO=0.591 (0.00069267%), Factors=4
+#> Iteration 142: time=0.00, Factors=4
+#> Iteration 143: time=0.00, Factors=4
 #> Iteration 144: time=0.00, Factors=4
-#> Iteration 145: time=0.02, Factors=4
-#> Iteration 146: time=0.01, ELBO=-24609.06, deltaELBO=0.670 (0.00078584%), Factors=4
-#> Iteration 147: time=0.01, Factors=4
-#> Iteration 148: time=0.01, Factors=4
-#> Iteration 149: time=0.01, Factors=4
-#> Iteration 150: time=0.01, Factors=4
+#> Iteration 145: time=0.00, Factors=4
+#> Iteration 146: time=0.00, ELBO=-24609.06, deltaELBO=0.670 (0.00078584%), Factors=4
+#> Iteration 147: time=0.00, Factors=4
+#> Iteration 148: time=0.00, Factors=4
+#> Iteration 149: time=0.00, Factors=4
+#> Iteration 150: time=0.00, Factors=4
 #> Iteration 151: time=0.00, ELBO=-24608.11, deltaELBO=0.952 (0.00111659%), Factors=4
-#> Iteration 152: time=0.01, Factors=4
+#> Iteration 152: time=0.00, Factors=4
 #> Iteration 153: time=0.00, Factors=4
-#> Iteration 154: time=0.01, Factors=4
+#> Iteration 154: time=0.00, Factors=4
 #> Iteration 155: time=0.00, Factors=4
-#> Iteration 156: time=0.02, ELBO=-24606.24, deltaELBO=1.871 (0.00219403%), Factors=4
-#> Iteration 157: time=0.01, Factors=4
+#> Iteration 156: time=0.00, ELBO=-24606.24, deltaELBO=1.871 (0.00219403%), Factors=4
+#> Iteration 157: time=0.00, Factors=4
 #> Iteration 158: time=0.00, Factors=4
-#> Iteration 159: time=0.02, Factors=4
+#> Iteration 159: time=0.00, Factors=4
 #> Iteration 160: time=0.00, Factors=4
-#> Iteration 161: time=0.02, ELBO=-24603.31, deltaELBO=2.927 (0.00343262%), Factors=4
+#> Iteration 161: time=0.00, ELBO=-24603.31, deltaELBO=2.927 (0.00343262%), Factors=4
 #> Iteration 162: time=0.00, Factors=4
-#> Iteration 163: time=0.02, Factors=4
+#> Iteration 163: time=0.00, Factors=4
 #> Iteration 164: time=0.00, Factors=4
-#> Iteration 165: time=0.01, Factors=4
+#> Iteration 165: time=0.00, Factors=4
 #> Iteration 166: time=0.00, ELBO=-24601.39, deltaELBO=1.922 (0.00225473%), Factors=4
 #> Iteration 167: time=0.00, Factors=4
-#> Iteration 168: time=0.02, Factors=4
+#> Iteration 168: time=0.00, Factors=4
 #> Iteration 169: time=0.00, Factors=4
-#> Iteration 170: time=0.02, Factors=4
+#> Iteration 170: time=0.00, Factors=4
 #> Iteration 171: time=0.00, ELBO=-24600.21, deltaELBO=1.184 (0.00138927%), Factors=4
-#> Iteration 172: time=0.02, Factors=4
-#> Iteration 173: time=0.01, Factors=4
+#> Iteration 172: time=0.00, Factors=4
+#> Iteration 173: time=0.00, Factors=4
 #> Iteration 174: time=0.00, Factors=4
-#> Iteration 175: time=0.02, Factors=4
-#> Iteration 176: time=0.02, ELBO=-24599.34, deltaELBO=0.872 (0.00102255%), Factors=4
+#> Iteration 175: time=0.00, Factors=4
+#> Iteration 176: time=0.00, ELBO=-24599.34, deltaELBO=0.872 (0.00102255%), Factors=4
 #> Iteration 177: time=0.00, Factors=4
-#> Iteration 178: time=0.02, Factors=4
+#> Iteration 178: time=0.00, Factors=4
 #> Iteration 179: time=0.00, Factors=4
 #> Iteration 180: time=0.00, Factors=4
-#> Iteration 181: time=0.02, ELBO=-24598.65, deltaELBO=0.683 (0.00080082%), Factors=4
-#> Iteration 182: time=0.02, Factors=4
+#> Iteration 181: time=0.00, ELBO=-24598.65, deltaELBO=0.683 (0.00080082%), Factors=4
+#> Iteration 182: time=0.00, Factors=4
 #> Iteration 183: time=0.00, Factors=4
-#> Iteration 184: time=0.01, Factors=4
+#> Iteration 184: time=0.00, Factors=4
 #> Iteration 185: time=0.00, Factors=4
-#> Iteration 186: time=0.03, ELBO=-24598.09, deltaELBO=0.568 (0.00066592%), Factors=4
-#> Iteration 187: time=0.01, Factors=4
-#> Iteration 188: time=0.01, Factors=4
-#> Iteration 189: time=0.02, Factors=4
+#> Iteration 186: time=0.00, ELBO=-24598.09, deltaELBO=0.568 (0.00066592%), Factors=4
+#> Iteration 187: time=0.00, Factors=4
+#> Iteration 188: time=0.00, Factors=4
+#> Iteration 189: time=0.00, Factors=4
 #> Iteration 190: time=0.00, Factors=4
-#> Iteration 191: time=0.02, ELBO=-24597.60, deltaELBO=0.490 (0.00057448%), Factors=4
-#> Iteration 192: time=0.01, Factors=4
+#> Iteration 191: time=0.01, ELBO=-24597.60, deltaELBO=0.490 (0.00057448%), Factors=4
+#> Iteration 192: time=0.00, Factors=4
 #> Iteration 193: time=0.00, Factors=4
-#> Iteration 194: time=0.02, Factors=4
+#> Iteration 194: time=0.00, Factors=4
 #> Iteration 195: time=0.00, Factors=4
-#> Iteration 196: time=0.02, ELBO=-24597.17, deltaELBO=0.429 (0.00050283%), Factors=4
-#> Iteration 197: time=0.01, Factors=4
-#> Iteration 198: time=0.01, Factors=4
+#> Iteration 196: time=0.00, ELBO=-24597.17, deltaELBO=0.429 (0.00050283%), Factors=4
+#> Iteration 197: time=0.00, Factors=4
+#> Iteration 198: time=0.00, Factors=4
 #> Iteration 199: time=0.00, Factors=4
-#> Iteration 200: time=0.02, Factors=4
-#> Iteration 201: time=0.02, ELBO=-24596.78, deltaELBO=0.389 (0.00045569%), Factors=4
-#> Iteration 202: time=0.01, Factors=4
+#> Iteration 200: time=0.00, Factors=4
+#> Iteration 201: time=0.00, ELBO=-24596.78, deltaELBO=0.389 (0.00045569%), Factors=4
+#> Iteration 202: time=0.00, Factors=4
 #> Iteration 203: time=0.00, Factors=4
-#> Iteration 204: time=0.02, Factors=4
-#> Iteration 205: time=0.02, Factors=4
-#> Iteration 206: time=0.02, ELBO=-24596.43, deltaELBO=0.348 (0.00040855%), Factors=4
+#> Iteration 204: time=0.00, Factors=4
+#> Iteration 205: time=0.00, Factors=4
+#> Iteration 206: time=0.00, ELBO=-24596.43, deltaELBO=0.348 (0.00040855%), Factors=4
 #> 
 #> Converged!
 #> 
@@ -358,7 +358,7 @@ res_mofa <- run_factor_pipeline(sim$data, methods = "MOFA", k = 4,
 #> #######################
 #> 
 #> 
-#> Saving model in C:\Users\hp\AppData\Local\Temp\Rtmp0g676J/mofa_model.hdf5...
+#> Saving model in C:\Users\hp\AppData\Local\Temp\RtmpM99ZUH/mofa_model.hdf5...
 res_mofa$MOFA$plots$variance_by_factor
 ```
 
