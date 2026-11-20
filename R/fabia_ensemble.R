@@ -30,7 +30,8 @@
 #' @param runs Number of FABIA runs (default `30`). The book used 100.
 #' @param sample_fraction Share of samples used in each run. `1` (default)
 #'   reruns FABIA on all samples with a different seed; a value below 1 draws a
-#'   random subsample without replacement for each run.
+#'   random subsample without replacement for each run. With subsampling a
+#'   bicluster varies more between runs; use a lower `similarity` (about 0.3).
 #' @param similarity Jaccard similarity at which the bicluster tree is cut
 #'   (default `0.5`: biclusters in the same group share at least half of their
 #'   row-column combinations).
@@ -44,6 +45,8 @@
 #' @param thresZ,thresL Thresholds on factor scores and loadings used to turn
 #'   each FABIA factor into a bicluster; passed to [fabia::extractBic()]
 #'   (defaults `0.5` and `NULL`, i.e. FABIA's own choice).
+#'   `thresZ` matters most: below 0.5 FABIA's automatic `thresL` becomes so
+#'   strict that biclusters keep very few features; 0.5 to 0.8 works well.
 #'
 #' @return A named list.
 #' @references Khamiakova T, Kaiser S, Shkedy Z (2016). Ensemble methods and

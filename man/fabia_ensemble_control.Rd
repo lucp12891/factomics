@@ -19,7 +19,8 @@ fabia_ensemble_control(
 
 \item{sample_fraction}{Share of samples used in each run. \code{1} (default)
 reruns FABIA on all samples with a different seed; a value below 1 draws a
-random subsample without replacement for each run.}
+random subsample without replacement for each run. With subsampling a
+bicluster varies more between runs; use a lower \code{similarity} (about 0.3).}
 
 \item{similarity}{Jaccard similarity at which the bicluster tree is cut
 (default \code{0.5}: biclusters in the same group share at least half of their
@@ -36,7 +37,9 @@ Default \code{0.5}.}
 
 \item{thresZ, thresL}{Thresholds on factor scores and loadings used to turn
 each FABIA factor into a bicluster; passed to \code{\link[fabia:extractBic]{fabia::extractBic()}}
-(defaults \code{0.5} and \code{NULL}, i.e. FABIA's own choice).}
+(defaults \code{0.5} and \code{NULL}, i.e. FABIA's own choice).
+\code{thresZ} matters most: below 0.5 FABIA's automatic \code{thresL} becomes so
+strict that biclusters keep very few features; 0.5 to 0.8 works well.}
 }
 \value{
 A named list.

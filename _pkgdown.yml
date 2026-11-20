@@ -16,12 +16,15 @@ home:
 
 navbar:
   structure:
-    left: [intro, methods, visualization, clustering, articles, reference, news]
+    left: [intro, methods, ensemble, visualization, clustering, articles, reference, news]
     right: [search, github]
   components:
     methods:
       text: Methods
       href: articles/methods.html
+    ensemble:
+      text: Ensemble FABIA
+      href: articles/fabia-ensemble.html
     visualization:
       text: Visualisation
       href: articles/visualization.html
