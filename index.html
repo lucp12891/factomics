@@ -42,6 +42,7 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="articles/factomics.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="articles/methods.html">Methods</a></li>
+<li class="nav-item"><a class="nav-link" href="articles/fabia-ensemble.html">Ensemble FABIA</a></li>
 <li class="nav-item"><a class="nav-link" href="articles/visualization.html">Visualisation</a></li>
 <li class="nav-item"><a class="nav-link" href="articles/clustering.html">Clustering</a></li>
 <li class="nav-item dropdown">
@@ -177,13 +178,29 @@ Choosing the number of clusters
 Benchmark: factor correlation across methods
 </figcaption></figure><figure><img src="img/gallery/associations.png" alt="Association of factors with sample covariates"><figcaption>
 Which factors track the covariates
+</figcaption></figure><figure><img src="img/gallery/ensemble.png" alt="Reliability of bicluster groups over 30 FABIA runs"><figcaption>
+Ensemble FABIA: robust biclusters
+</figcaption></figure><figure><img src="img/gallery/stability.png" alt="Agreement between seeds for FABIA and ensemble FABIA"><figcaption>
+FABIA vs ensemble FABIA across seeds
 </figcaption></figure>
 </div>
 </div>
 <div class="section level2">
+<h2 id="robust-biclusters-with-ensemble-fabia">Robust biclusters with ensemble FABIA<a class="anchor" aria-label="anchor" href="#robust-biclusters-with-ensemble-fabia"></a>
+</h2>
+<p>A single FABIA run depends on its random start, so the biclusters it reports can change from run to run. <code>FABIA_ENS</code> runs FABIA many times, groups the biclusters of all runs by Jaccard similarity and keeps those found in most runs, following the ensemble method of <em>Applied Biclustering Methods</em> (Kasim et al. 2016, Chapter 10). On the example data plain FABIA’s factors agree only about 0.8 between seeds, the ensemble’s 0.999.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_factor_pipeline.html">run_factor_pipeline</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">data</span>, methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FABIA"</span>, <span class="st">"FABIA_ENS"</span><span class="op">)</span>, k <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/plot_fabia_ensemble.html">plot_fabia_ensemble</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span>        <span class="co"># how often each bicluster is found</span></span>
+<span><span class="va">st</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/factor_stability.html">factor_stability</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">data</span>, methods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FABIA"</span>, <span class="st">"FABIA_ENS"</span><span class="op">)</span>, k <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>                       seeds <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, truth <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">truth</span><span class="op">$</span><span class="va">Z</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/plot_factor_stability.html">plot_factor_stability</a></span><span class="op">(</span><span class="va">st</span><span class="op">)</span>       <span class="co"># does the result depend on the seed?</span></span></code></pre></div>
+<p>See <a href="articles/fabia-ensemble.html">FABIA versus ensemble FABIA</a> for how it works and how to choose its parameters.</p>
+</div>
+<div class="section level2">
 <h2 id="id_60-second-quick-start">60-second quick start<a class="anchor" aria-label="anchor" href="#id_60-second-quick-start"></a>
 </h2>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"lucp12891/factomics"</span><span class="op">)</span></span>
 <span></span>
@@ -198,8 +215,8 @@ Which factors track the covariates
 <span><span class="fu"><a href="reference/plot_variance_explained.html">plot_variance_explained</a></span><span class="op">(</span><span class="va">fx</span><span class="op">$</span><span class="va">results</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/plot_clusters.html">plot_clusters</a></span><span class="op">(</span><span class="va">fx</span><span class="op">$</span><span class="va">clusters</span>, <span class="st">"agreement"</span><span class="op">)</span></span></code></pre></div>
 <p>Or, with nothing installed but Docker:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-v</span> <span class="st">"</span><span class="va">$PWD</span><span class="st">"</span>:/work ghcr.io/lucp12891/factomics:latest <span class="dt">\</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  factomics-cli <span class="at">--demo</span> <span class="at">--out</span> output</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-v</span> <span class="st">"</span><span class="va">$PWD</span><span class="st">"</span>:/work ghcr.io/lucp12891/factomics:latest <span class="dt">\</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  factomics-cli <span class="at">--demo</span> <span class="at">--out</span> output</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="where-to-next">Where to next<a class="anchor" aria-label="anchor" href="#where-to-next"></a>
@@ -215,6 +232,8 @@ Which factors track the covariates
 <a href="articles/clustering.html">Clustering</a>: finding sample subgroups from the factors.</li>
 <li>
 <a href="articles/benchmarking.html">Benchmarking methods</a>: do the methods agree, and which recovers the truth?</li>
+<li>
+<a href="articles/fabia-ensemble.html">FABIA versus ensemble FABIA</a>: robust biclusters, and how the parameters affect them.</li>
 <li>
 <a href="articles/own-data.html">Your own data</a>: reading files, preprocessing and metadata.</li>
 <li>

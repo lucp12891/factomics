@@ -19,6 +19,7 @@ fabia_ensemble() and by run_factor_pipeline(methods = "FABIA_ENS").'><meta prope
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/factomics.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../articles/methods.html">Methods</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/fabia-ensemble.html">Ensemble FABIA</a></li>
 <li class="nav-item"><a class="nav-link" href="../articles/visualization.html">Visualisation</a></li>
 <li class="nav-item"><a class="nav-link" href="../articles/clustering.html">Clustering</a></li>
 <li class="nav-item dropdown">
@@ -80,7 +81,8 @@ fabia_ensemble() and by run_factor_pipeline(methods = "FABIA_ENS").'><meta prope
 <dt id="arg-sample-fraction">sample_fraction<a class="anchor" aria-label="anchor" href="#arg-sample-fraction"></a></dt>
 <dd><p>Share of samples used in each run. <code>1</code> (default)
 reruns FABIA on all samples with a different seed; a value below 1 draws a
-random subsample without replacement for each run.</p></dd>
+random subsample without replacement for each run. With subsampling a
+bicluster varies more between runs; use a lower <code>similarity</code> (about 0.3).</p></dd>
 
 
 <dt id="arg-similarity">similarity<a class="anchor" aria-label="anchor" href="#arg-similarity"></a></dt>
@@ -105,7 +107,9 @@ Default <code>0.5</code>.</p></dd>
 <dt id="arg-thresz-thresl">thresZ, thresL<a class="anchor" aria-label="anchor" href="#arg-thresz-thresl"></a></dt>
 <dd><p>Thresholds on factor scores and loadings used to turn
 each FABIA factor into a bicluster; passed to <code><a href="https://rdrr.io/pkg/fabia/man/extractBic.html" class="external-link">fabia::extractBic()</a></code>
-(defaults <code>0.5</code> and <code>NULL</code>, i.e. FABIA's own choice).</p></dd>
+(defaults <code>0.5</code> and <code>NULL</code>, i.e. FABIA's own choice).
+<code>thresZ</code> matters most: below 0.5 FABIA's automatic <code>thresL</code> becomes so
+strict that biclusters keep very few features; 0.5 to 0.8 works well.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -97,6 +97,39 @@ covariates](img/gallery/associations.png)
 
 Which factors track the covariates
 
+![Reliability of bicluster groups over 30 FABIA
+runs](img/gallery/ensemble.png)
+
+Ensemble FABIA: robust biclusters
+
+![Agreement between seeds for FABIA and ensemble
+FABIA](img/gallery/stability.png)
+
+FABIA vs ensemble FABIA across seeds
+
+## Robust biclusters with ensemble FABIA
+
+A single FABIA run depends on its random start, so the biclusters it
+reports can change from run to run. `FABIA_ENS` runs FABIA many times,
+groups the biclusters of all runs by Jaccard similarity and keeps those
+found in most runs, following the ensemble method of *Applied
+Biclustering Methods* (Kasim et al. 2016, Chapter 10). On the example
+data plain FABIA’s factors agree only about 0.8 between seeds, the
+ensemble’s 0.999.
+
+``` r
+
+res <- run_factor_pipeline(sim$data, methods = c("FABIA", "FABIA_ENS"), k = 4)
+plot_fabia_ensemble(res)        # how often each bicluster is found
+st <- factor_stability(sim$data, methods = c("FABIA", "FABIA_ENS"), k = 4,
+                       seeds = 1:5, truth = sim$truth$Z)
+plot_factor_stability(st)       # does the result depend on the seed?
+```
+
+See [FABIA versus ensemble
+FABIA](https://lucp12891.github.io/factomics/articles/fabia-ensemble.md)
+for how it works and how to choose its parameters.
+
 ## 60-second quick start
 
 ``` r
@@ -138,6 +171,9 @@ docker run --rm -v "$PWD":/work ghcr.io/lucp12891/factomics:latest \
 - [Benchmarking
   methods](https://lucp12891.github.io/factomics/articles/benchmarking.md):
   do the methods agree, and which recovers the truth?
+- [FABIA versus ensemble
+  FABIA](https://lucp12891.github.io/factomics/articles/fabia-ensemble.md):
+  robust biclusters, and how the parameters affect them.
 - [Your own
   data](https://lucp12891.github.io/factomics/articles/own-data.md):
   reading files, preprocessing and metadata.

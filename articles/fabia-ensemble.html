@@ -39,9 +39,10 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/factomics.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../articles/methods.html">Methods</a></li>
+<li class="active nav-item"><a class="nav-link" href="../articles/fabia-ensemble.html">Ensemble FABIA</a></li>
 <li class="nav-item"><a class="nav-link" href="../articles/visualization.html">Visualisation</a></li>
 <li class="nav-item"><a class="nav-link" href="../articles/clustering.html">Clustering</a></li>
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><h6 class="dropdown-header" data-toc-skip>Guides</h6></li>
@@ -214,18 +215,499 @@ seed. The ensemble gives practically the same factors whatever the seed,
 and recovers the true factors at least as well.</p>
 </div>
 <div class="section level2">
+<h2 id="parameters-and-their-defaults">Parameters and their defaults<a class="anchor" aria-label="anchor" href="#parameters-and-their-defaults"></a>
+</h2>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr class="header">
+<th>Setting</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>k</code></td>
+<td>5</td>
+<td>Factors (biclusters) per FABIA run; also the maximum number of
+robust factors returned</td>
+</tr>
+<tr class="even">
+<td><code>fabia_alpha</code></td>
+<td>0.01</td>
+<td>FABIA sparseness of the loadings (larger = sparser)</td>
+</tr>
+<tr class="odd">
+<td><code>fabia_cyc</code></td>
+<td>1000</td>
+<td>FABIA iterations per run</td>
+</tr>
+<tr class="even">
+<td>FABIA priors</td>
+<td>
+<code>spz = 0.5</code>, <code>spl = 0.1</code>,
+<code>lap = 1</code>, <code>nL = 2</code>
+</td>
+<td>Fixed, as for plain <code>"FABIA"</code>
+</td>
+</tr>
+<tr class="odd">
+<td><code>runs</code></td>
+<td>30</td>
+<td>Number of FABIA runs (the book used 100)</td>
+</tr>
+<tr class="even">
+<td><code>sample_fraction</code></td>
+<td>1</td>
+<td>Share of samples per run; below 1 = subsampling</td>
+</tr>
+<tr class="odd">
+<td><code>thresZ</code></td>
+<td>0.5</td>
+<td>Score threshold that turns a FABIA factor into a bicluster
+(<code><a href="https://rdrr.io/pkg/fabia/man/extractBic.html" class="external-link">fabia::extractBic()</a></code>)</td>
+</tr>
+<tr class="even">
+<td><code>thresL</code></td>
+<td><code>NULL</code></td>
+<td>Loading threshold for the same; <code>NULL</code> lets FABIA choose
+it from <code>thresZ</code>
+</td>
+</tr>
+<tr class="odd">
+<td><code>similarity</code></td>
+<td>0.5</td>
+<td>Jaccard similarity at which the bicluster tree is cut</td>
+</tr>
+<tr class="even">
+<td><code>min_reliability</code></td>
+<td>0.5</td>
+<td>Share of runs a group must be found in to be kept</td>
+</tr>
+<tr class="odd">
+<td><code>membership</code></td>
+<td>0.5</td>
+<td>Share of a group’s biclusters a feature or sample must be in (1 =
+core, small = union)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level2">
+<h2 id="how-sensitive-is-the-ensemble-to-its-parameters">How sensitive is the ensemble to its parameters?<a class="anchor" aria-label="anchor" href="#how-sensitive-is-the-ensemble-to-its-parameters"></a>
+</h2>
+<p>We changed one setting at a time from the defaults (with
+<code>k = 4</code>) on three simulated data sets with three true factors
+each, and recorded how many robust factors were returned, how many of
+the true factors were found (|r| &gt; 0.8), the recovery of the true
+scores, and the precision and recall of the features in the robust
+biclusters against the true signal features. Plain FABIA (one run, seed
+21, biclusters extracted the same way) is shown for comparison. The
+script is <code>data-raw/fabia-ensemble-sensitivity.R</code> in the
+package source.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"fabia-ensemble-sensitivity.csv"</span><span class="op">)</span></span>
+<span><span class="va">d</span><span class="op">$</span><span class="va">setting</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">param</span> <span class="op">==</span> <span class="st">"default"</span>, <span class="st">"default"</span>,</span>
+<span>                    <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">param</span>, <span class="st">"="</span>, <span class="va">d</span><span class="op">$</span><span class="va">value</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/aggregate.html" class="external-link">aggregate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">n_factors</span>, <span class="va">true_found</span>, <span class="va">recovery</span>, <span class="va">precision</span>, <span class="va">recall</span>,</span>
+<span>                     <span class="va">seconds</span><span class="op">)</span> <span class="op">~</span> <span class="va">method</span> <span class="op">+</span> <span class="va">setting</span>, <span class="va">d</span>, <span class="va">mean</span>,</span>
+<span>               na.action <span class="op">=</span> <span class="va">na.pass</span><span class="op">)</span></span>
+<span><span class="va">s</span> <span class="op">&lt;-</span> <span class="va">s</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">s</span><span class="op">$</span><span class="va">method</span> <span class="op">!=</span> <span class="st">"FABIA"</span>, <span class="va">s</span><span class="op">$</span><span class="va">setting</span> <span class="op">!=</span> <span class="st">"default"</span>, <span class="va">s</span><span class="op">$</span><span class="va">setting</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">s</span>, digits <span class="op">=</span> <span class="fl">2</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>             col.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Method"</span>, <span class="st">"Setting"</span>, <span class="st">"Factors"</span>, <span class="st">"True found (of 3)"</span>,</span>
+<span>                           <span class="st">"Recovery"</span>, <span class="st">"Precision"</span>, <span class="st">"Recall"</span>, <span class="st">"Seconds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="9%">
+<col width="35%">
+<col width="7%">
+<col width="16%">
+<col width="8%">
+<col width="9%">
+<col width="6%">
+<col width="7%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Method</th>
+<th align="left">Setting</th>
+<th align="right">Factors</th>
+<th align="right">True found (of 3)</th>
+<th align="right">Recovery</th>
+<th align="right">Precision</th>
+<th align="right">Recall</th>
+<th align="right">Seconds</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">FABIA</td>
+<td align="left">default</td>
+<td align="right">4.00</td>
+<td align="right">2.00</td>
+<td align="right">0.91</td>
+<td align="right">0.99</td>
+<td align="right">0.78</td>
+<td align="right">0.93</td>
+</tr>
+<tr class="even">
+<td align="left">FABIA</td>
+<td align="left">alpha = 0.05</td>
+<td align="right">4.00</td>
+<td align="right">3.00</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.80</td>
+<td align="right">0.52</td>
+</tr>
+<tr class="odd">
+<td align="left">FABIA</td>
+<td align="left">alpha = 0.1</td>
+<td align="right">4.00</td>
+<td align="right">3.00</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.72</td>
+<td align="right">0.50</td>
+</tr>
+<tr class="even">
+<td align="left">FABIA</td>
+<td align="left">k = 3</td>
+<td align="right">3.00</td>
+<td align="right">3.00</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.74</td>
+<td align="right">0.42</td>
+</tr>
+<tr class="odd">
+<td align="left">FABIA</td>
+<td align="left">k = 6</td>
+<td align="right">6.00</td>
+<td align="right">3.00</td>
+<td align="right">0.99</td>
+<td align="right">0.98</td>
+<td align="right">0.87</td>
+<td align="right">0.71</td>
+</tr>
+<tr class="even">
+<td align="left">FABIA_ENS</td>
+<td align="left">default</td>
+<td align="right">3.00</td>
+<td align="right">3.00</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.82</td>
+<td align="right">22.46</td>
+</tr>
+<tr class="odd">
+<td align="left">FABIA_ENS</td>
+<td align="left">alpha = 0.05</td>
+<td align="right">3.00</td>
+<td align="right">3.00</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.80</td>
+<td align="right">15.74</td>
+</tr>
+<tr class="even">
+<td align="left">FABIA_ENS</td>
+<td align="left">alpha = 0.1</td>
+<td align="right">3.00</td>
+<td align="right">3.00</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.71</td>
+<td align="right">14.85</td>
+</tr>
+<tr class="odd">
+<td align="left">FABIA_ENS</td>
+<td align="left">k = 3</td>
+<td align="right">3.00</td>
+<td align="right">3.00</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.74</td>
+<td align="right">11.93</td>
+</tr>
+<tr class="even">
+<td align="left">FABIA_ENS</td>
+<td align="left">k = 6</td>
+<td align="right">3.00</td>
+<td align="right">3.00</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.88</td>
+<td align="right">19.02</td>
+</tr>
+<tr class="odd">
+<td align="left">FABIA_ENS</td>
+<td align="left">membership = 0.2</td>
+<td align="right">3.00</td>
+<td align="right">3.00</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.83</td>
+<td align="right">8.46</td>
+</tr>
+<tr class="even">
+<td align="left">FABIA_ENS</td>
+<td align="left">membership = 1</td>
+<td align="right">3.00</td>
+<td align="right">3.00</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.74</td>
+<td align="right">8.51</td>
+</tr>
+<tr class="odd">
+<td align="left">FABIA_ENS</td>
+<td align="left">min_reliability = 0.3</td>
+<td align="right">3.00</td>
+<td align="right">3.00</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.82</td>
+<td align="right">7.84</td>
+</tr>
+<tr class="even">
+<td align="left">FABIA_ENS</td>
+<td align="left">min_reliability = 0.8</td>
+<td align="right">3.00</td>
+<td align="right">3.00</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.82</td>
+<td align="right">8.05</td>
+</tr>
+<tr class="odd">
+<td align="left">FABIA_ENS</td>
+<td align="left">runs = 10</td>
+<td align="right">3.00</td>
+<td align="right">3.00</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.82</td>
+<td align="right">7.40</td>
+</tr>
+<tr class="even">
+<td align="left">FABIA_ENS</td>
+<td align="left">runs = 100</td>
+<td align="right">3.00</td>
+<td align="right">3.00</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.82</td>
+<td align="right">48.96</td>
+</tr>
+<tr class="odd">
+<td align="left">FABIA_ENS</td>
+<td align="left">sample_fraction = 0.6</td>
+<td align="right">2.67</td>
+<td align="right">2.67</td>
+<td align="right">0.91</td>
+<td align="right">1.00</td>
+<td align="right">0.73</td>
+<td align="right">6.16</td>
+</tr>
+<tr class="even">
+<td align="left">FABIA_ENS</td>
+<td align="left">sample_fraction = 0.8</td>
+<td align="right">2.67</td>
+<td align="right">2.67</td>
+<td align="right">0.90</td>
+<td align="right">1.00</td>
+<td align="right">0.70</td>
+<td align="right">7.31</td>
+</tr>
+<tr class="odd">
+<td align="left">FABIA_ENS</td>
+<td align="left">sample_fraction 0.8 + similarity = 0.3</td>
+<td align="right">3.00</td>
+<td align="right">3.00</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.81</td>
+<td align="right">9.74</td>
+</tr>
+<tr class="even">
+<td align="left">FABIA_ENS</td>
+<td align="left">similarity = 0.3</td>
+<td align="right">3.00</td>
+<td align="right">3.00</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.82</td>
+<td align="right">12.63</td>
+</tr>
+<tr class="odd">
+<td align="left">FABIA_ENS</td>
+<td align="left">similarity = 0.7</td>
+<td align="right">3.00</td>
+<td align="right">3.00</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.82</td>
+<td align="right">7.45</td>
+</tr>
+<tr class="even">
+<td align="left">FABIA_ENS</td>
+<td align="left">thresZ = 0.3</td>
+<td align="right">1.33</td>
+<td align="right">1.33</td>
+<td align="right">0.48</td>
+<td align="right">1.00</td>
+<td align="right">0.03</td>
+<td align="right">12.65</td>
+</tr>
+<tr class="odd">
+<td align="left">FABIA_ENS</td>
+<td align="left">thresZ = 0.8</td>
+<td align="right">3.33</td>
+<td align="right">3.00</td>
+<td align="right">1.00</td>
+<td align="right">0.99</td>
+<td align="right">0.91</td>
+<td align="right">15.93</td>
+</tr>
+</tbody>
+</table>
+<p>What this shows:</p>
+<ul>
+<li>
+<strong>Plain FABIA</strong> always returns <code>k</code> factors,
+so with <code>k = 4</code> or <code>k = 6</code> it reports one to three
+factors that are not in the data, and with the default settings it
+missed all three true factors on one data set (below). The ensemble
+returned exactly the three true factors in every one of these
+cases.</li>
+<li>
+<strong><code>runs</code>, <code>similarity</code>,
+<code>min_reliability</code></strong>: no effect between 10 and 100
+runs, similarity 0.3 to 0.7 and reliability 0.3 to 0.8. The robust
+biclusters were found in (nearly) every run, so the result is not on a
+knife edge. 30 runs is a safe default; more runs only cost time.</li>
+<li>
+<strong><code>k</code></strong>: asking for more factors than exist
+(<code>k = 6</code>) is safe, the extra ones are not reproducible and
+are dropped. Asking for too few loses factors.</li>
+<li>
+<strong><code>membership</code></strong> trades recall for
+compactness: 0.2 (close to the union) keeps more true features, 1 (the
+core) fewer; precision stays at 1.</li>
+<li>
+<strong><code>alpha</code></strong>: larger values give sparser,
+smaller biclusters (lower recall).</li>
+<li>
+<strong><code>thresZ</code></strong> matters most. With
+<code>thresZ = 0.3</code> FABIA’s automatic loading threshold becomes so
+strict that biclusters keep only a handful of features and most factors
+are lost. <code>thresZ = 0.8</code> gives larger biclusters (higher
+recall) but occasionally an extra small bicluster. Keep it between 0.5
+and 0.8.</li>
+<li>
+<strong><code>sample_fraction</code> &lt; 1</strong> (subsampling)
+on one data set split a true bicluster into two groups, each below 50%
+reliability, so it was dropped. When subsampling, lower
+<code>similarity</code> to about 0.3, which brought it back.</li>
+</ul>
+<p>Results per data set for the defaults:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">d</span><span class="op">[</span><span class="va">d</span><span class="op">$</span><span class="va">param</span> <span class="op">==</span> <span class="st">"default"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dataset"</span>, <span class="st">"method"</span>, <span class="st">"n_factors"</span>,</span>
+<span>                                        <span class="st">"true_found"</span>, <span class="st">"recovery"</span>, <span class="st">"precision"</span>,</span>
+<span>                                        <span class="st">"recall"</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>             digits <span class="op">=</span> <span class="fl">3</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="12%">
+<col width="15%">
+<col width="15%">
+<col width="16%">
+<col width="13%">
+<col width="15%">
+<col width="10%">
+</colgroup>
+<thead><tr class="header">
+<th align="right">dataset</th>
+<th align="left">method</th>
+<th align="right">n_factors</th>
+<th align="right">true_found</th>
+<th align="right">recovery</th>
+<th align="right">precision</th>
+<th align="right">recall</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">FABIA</td>
+<td align="right">4</td>
+<td align="right">3</td>
+<td align="right">0.991</td>
+<td align="right">0.993</td>
+<td align="right">0.822</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">FABIA_ENS</td>
+<td align="right">3</td>
+<td align="right">3</td>
+<td align="right">0.997</td>
+<td align="right">1.000</td>
+<td align="right">0.834</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="left">FABIA</td>
+<td align="right">4</td>
+<td align="right">3</td>
+<td align="right">0.997</td>
+<td align="right">1.000</td>
+<td align="right">0.805</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">FABIA_ENS</td>
+<td align="right">3</td>
+<td align="right">3</td>
+<td align="right">0.998</td>
+<td align="right">1.000</td>
+<td align="right">0.799</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">FABIA</td>
+<td align="right">4</td>
+<td align="right">0</td>
+<td align="right">0.727</td>
+<td align="right">0.991</td>
+<td align="right">0.716</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="left">FABIA_ENS</td>
+<td align="right">3</td>
+<td align="right">3</td>
+<td align="right">0.997</td>
+<td align="right">1.000</td>
+<td align="right">0.827</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level2">
 <h2 id="tuning">Tuning<a class="anchor" aria-label="anchor" href="#tuning"></a>
 </h2>
 <p>All settings are in <code><a href="../reference/fabia_ensemble_control.html">fabia_ensemble_control()</a></code>, passed as
 <code>fabia_ens_control = list(...)</code> in
 <code><a href="../reference/run_factor_pipeline.html">run_factor_pipeline()</a></code>, or used directly with the shortcut
 <code><a href="../reference/fabia_ensemble.html">fabia_ensemble()</a></code>:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fabia_ensemble.html">fabia_ensemble</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="va">data</span>, k <span class="op">=</span> <span class="fl">5</span>, alpha <span class="op">=</span> <span class="fl">0.01</span>, cyc <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>                      control <span class="op">=</span> <span class="fu"><a href="../reference/fabia_ensemble_control.html">fabia_ensemble_control</a></span><span class="op">(</span></span>
 <span>                        runs <span class="op">=</span> <span class="fl">100</span>,            <span class="co"># the book used 100 seeds</span></span>
 <span>                        sample_fraction <span class="op">=</span> <span class="fl">0.8</span>, <span class="co"># also robust to the samples</span></span>
-<span>                        similarity <span class="op">=</span> <span class="fl">0.5</span>,      <span class="co"># cut the tree at Jaccard 0.5</span></span>
+<span>                        similarity <span class="op">=</span> <span class="fl">0.3</span>,      <span class="co"># lower cut when subsampling</span></span>
 <span>                        min_reliability <span class="op">=</span> <span class="fl">0.5</span>, <span class="co"># found in &gt;= half the runs</span></span>
 <span>                        membership <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>     <span class="co"># majority robust bicluster</span></span></code></pre></div>
 <ul>
@@ -234,7 +716,8 @@ FABIA fit per run.</li>
 <li>
 <code>sample_fraction &lt; 1</code> also makes the biclusters robust
 to which samples were used, a form of subsampling as described in the
-book.</li>
+book. Combine it with <code>similarity = 0.3</code> (see the sensitivity
+results above).</li>
 <li>If no group reaches <code>min_reliability</code>, factomics stops
 with a message giving the best reliability it found; lower
 <code>min_reliability</code> or <code>similarity</code>.</li>
